@@ -1,0 +1,59 @@
+import * as React from "react";
+import { Component } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { CheckOutlined, SnippetsOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
+
+interface CardToolbarProps {
+  code: any;
+  expand: any;
+  isExpand: any;
+}
+
+export class CardToolbar extends Component<CardToolbarProps> {
+  state = {
+    copied: false,
+    copyTooltipVisible: false,
+  };
+
+  handleCodeCopied = () => {
+    this.setState({ copied: true });
+  };
+
+  onCopyTooltipVisibleChange = (visible: boolean) => {
+    if (visible) {
+      this.setState({
+        copyTooltipVisible: visible,
+        copied: false,
+      });
+      return;
+    }
+    this.setState({
+      copyTooltipVisible: visible,
+    });
+  };
+
+  render() {
+    const { code, expand, isExpand } = this.props;
+    const { copied, copyTooltipVisible } = this.state;
+    return (
+      <span
+        className={`code-box-icon mr-3 ${
+          copied && copyTooltipVisible ? "text-success" : ""
+        }`}
+      >
+        <Tooltip
+          title={copied ? "Copied" : "Copy code"}
+          visible={copyTooltipVisible}
+          onVisibleChange={this.onCopyTooltipVisibleChange}
+        >
+          <CopyToClipboard text={code} onCopy={() => this.handleCodeCopied()}>
+            {copied ? <CheckOutlined /> : <SnippetsOutlined />}
+          </CopyToClipboard>
+        </Tooltip>
+      </span>
+    );
+  }
+}
+
+export default CardToolbar;

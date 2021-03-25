@@ -1,0 +1,9 @@
+export const EXPIRE_TIME = "message.ExpireTime";
+export const EMAIL_CONFIRM_MSG = "message.EmailConfirmMsg";
+export const NEW_PASSWORD = "message.NewPassword";
+export const ACTIVATE_ACCOUNT = "auth.ActivateAccount";
+export const DONE = "message.Done";
+export const UPLOADED = "message.Uploaded";
+export const UPLOADING = "message.Uploading";
+export const UPDATING = "message.Updating";
+export const ERROR = "message.Error";
