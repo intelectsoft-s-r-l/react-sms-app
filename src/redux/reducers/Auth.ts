@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import {
   AUTHENTICATED,
   SHOW_AUTH_MESSAGE,
@@ -12,6 +13,7 @@ import {
   IS_USER_ACTIVATED,
   SET_TOKEN,
 } from "redux/constants/Auth";
+import Utils from "utils";
 
 export interface IAuth {
   loading?: boolean;
@@ -27,8 +29,7 @@ const initState = {
   message: "",
   showMessage: false,
   redirect: "",
-  // Remove this when in development
-  token: "123",
+  token: "",
   isAuth: false,
   userActivated: false,
 };
@@ -57,6 +58,7 @@ const auth = (state = initState, action: any) => {
         showMessage: false,
       };
     case SIGNOUT:
+      Cookies.remove("Token");
       return {
         ...state,
         token: null,

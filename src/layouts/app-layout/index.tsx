@@ -68,10 +68,9 @@ export const AppLayout = ({ navCollapsed, navType, location }: any) => {
   );
 };
 
-const mapStateToProps = ({ theme, auth }: IState) => {
+const mapStateToProps = ({ theme }: IState) => {
   const { navCollapsed, navType, locale } = theme as ITheme;
-  const { token } = auth as IAuth;
-  return { navCollapsed, navType, locale, token };
+  return { navCollapsed, navType, locale };
 };
 
 export default connect(mapStateToProps)(React.memo(AppLayout));

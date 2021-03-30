@@ -1,8 +1,9 @@
 import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from "constants/ThemeConstant";
 import { env } from "./EnvironmentConfig";
 
-export const APP_NAME = "App Starter";
-export const API_APP_URL = env!.API_APP_URL;
+export const APP_NAME = "My SMS App";
+export const API_AUTH_URL = env!.API_AUTH_URL;
+export const API_SMS_URL = env!.API_SMS_URL;
 export const APP_PREFIX_PATH = "/app";
 export const AUTH_PREFIX_PATH = "/auth";
 

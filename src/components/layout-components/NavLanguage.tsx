@@ -92,10 +92,9 @@ const NavLanguage = ({
   );
 };
 
-const mapStateToProps = ({ theme, account, auth }: IState) => {
+const mapStateToProps = ({ theme, account }: IState) => {
   const { locale } = theme as ITheme;
-  const { token } = auth as IAuth;
-  return { locale, account, token };
+  return { locale, account };
 };
 const mapDispatchToProps = {
   onLocaleChange,

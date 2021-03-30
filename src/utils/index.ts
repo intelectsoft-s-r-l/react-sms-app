@@ -1,4 +1,6 @@
 import { message } from "antd";
+// @ts-ignore
+import { JSEncrypt } from "jsencrypt";
 import { RcFile } from "antd/lib/upload";
 import moment from "moment";
 import { showAuthMessage } from "redux/actions/Auth";
@@ -24,6 +26,11 @@ class Utils {
       }
     }
     return route;
+  }
+  static encryptInput(input: string, publicKey: any): any {
+    const jsEncrypt = new JSEncrypt({});
+    jsEncrypt.setPublicKey(publicKey);
+    return jsEncrypt.encrypt(input);
   }
 
   static getColorContrast(hex: any) {

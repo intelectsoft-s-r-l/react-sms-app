@@ -26,6 +26,10 @@ export const AuthViews = ({ match }: RouteComponentProps) => {
           path={`${match.url}/404`}
           component={lazy(() => import(`./errors/error-page-1`))}
         />
+        <Route
+          path={`${match.url}/validate`}
+          component={lazy(() => import(`./authentication/validate`))}
+        />
         <Redirect from={AUTH_PREFIX_PATH} to={`${AUTH_PREFIX_PATH}/login`} />
         {/*<Route*/}
         {/*  path={`${match.url}/error-2`}*/}

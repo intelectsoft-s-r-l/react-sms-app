@@ -6,7 +6,7 @@ import {
   withRouter,
   RouteComponentProps,
 } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import AppLayout from "layouts/app-layout";
 import AuthLayout from "layouts/auth-layout";
 import AppLocale from "lang";
@@ -16,6 +16,10 @@ import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
 import { IState } from "redux/reducers";
 import { ITheme } from "redux/reducers/Theme";
 import { IAuth } from "redux/reducers/Auth";
+import getCookie from "utils/cookie";
+import Utils from "utils";
+import store from "redux/store";
+import Cookies from "js-cookie";
 interface IViews extends ITheme, IAuth, RouteComponentProps {}
 
 function RouteInterceptor({
@@ -42,8 +46,10 @@ function RouteInterceptor({
   );
 }
 export const Views = (props: IViews) => {
-  const { locale, location, token, history } = props;
+  const { locale, location, history } = props;
+  const token = useSelector((state: IState) => state.auth?.token);
   const currentAppLocale = locale ? AppLocale[locale] : "en";
+
   return (
     <IntlProvider
       locale={currentAppLocale.locale}
@@ -59,7 +65,7 @@ export const Views = (props: IViews) => {
           </Route>
           <RouteInterceptor
             path={APP_PREFIX_PATH}
-            isAuthenticated={token}
+            isAuthenticated={Cookies.get("Token")}
             component={AppLayout}
           />
         </Switch>
@@ -68,10 +74,9 @@ export const Views = (props: IViews) => {
   );
 };
 
-const mapStateToProps = ({ theme, auth }: IState) => {
+const mapStateToProps = ({ theme }: IState) => {
   const { locale } = theme as ITheme;
-  const { token } = auth as IAuth;
-  return { locale, token };
+  return { locale };
 };
 
 export default withRouter(connect(mapStateToProps, null)(Views));

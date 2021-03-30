@@ -1,8 +1,16 @@
 import { applyMiddleware, compose, createStore } from "redux";
-import reducers from "redux/reducers";
+import reducers, { IState } from "redux/reducers";
 import { loadState, saveState } from "utils/localStorage";
 import throttle from "lodash/throttle";
-import thunk from "redux-thunk";
+import thunk, { ThunkAction } from "redux-thunk";
+import Cookies from "js-cookie";
+
+export type ThunkResult<ReturnType> = ThunkAction<
+  ReturnType,
+  IState,
+  undefined,
+  any
+>;
 
 declare global {
   interface Window {
@@ -11,9 +19,13 @@ declare global {
 }
 
 function configureStore(preLoadedState: any) {
-  // const composeEnhancers =
-  //   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  return createStore(reducers, preLoadedState, compose(applyMiddleware(thunk)));
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  return createStore(
+    reducers,
+    preLoadedState,
+    composeEnhancers(applyMiddleware(thunk))
+  );
 }
 
 const store = configureStore(loadState());

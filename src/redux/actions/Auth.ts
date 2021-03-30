@@ -6,6 +6,13 @@ import {
   SHOW_LOADING,
   HIDE_LOADING,
 } from "redux/constants/Auth";
+import { AuthService } from "api/auth";
+import { EnErrorCode } from "api";
+import { ThunkResult } from "redux/store";
+import { AuthorizeUser } from "api/auth/types";
+import { getProfileInfo } from "./Account";
+import Utils from "utils";
+import Cookies from "js-cookie";
 
 export const authenticated = (token: string) => ({
   type: AUTHENTICATED,
@@ -31,3 +38,25 @@ export const showLoading = () => ({
 export const hideLoading = () => ({
   type: HIDE_LOADING,
 });
+
+export const authorizeUser = (
+  email: string,
+  password: string
+): ThunkResult<void> => async (dispatch, getState) => {
+  return await new AuthService()
+    .Login(email, password)
+    .then((data) => {
+      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+        Cookies.set("Token", data.Token, { expires: 7 });
+        dispatch(authenticated(data.Token));
+        return data;
+      } else {
+        dispatch(showAuthMessage(data.ErrorMessage.toString()));
+      }
+      return data;
+    })
+    .then((data) => {
+      dispatch(hideLoading());
+      return data;
+    });
+};

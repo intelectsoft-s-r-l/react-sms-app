@@ -38,8 +38,10 @@
   "auth.ConfirmRegistration.Msg2": "платформе! Проверьте вашу почту и подтвердите регистрацию кликнув по ссылке которую мы отправили!",
   "auth.GoToLogin": "Перейти к логину",
 
-  "sidenav.home": "Главная",
   "sidenav.dashboard": "Панель",
+  "sidenav.campaign": "Рассылка",
+  "sidenav.tariffs": "Тарифы",
+  "sidenav.settings": "Настройки",
 
   "header.logout.message": "Вы уверены что хотите выйти?",
   "header.logout.button": "Выйти",
@@ -111,5 +113,30 @@
   "theme.Light": "Светлая",
   "theme.Dark": "Темная",
   "theme.Locale": "Локализация",
-  "theme.Language": "Язык"
+  "theme.Language": "Язык",
+
+  "search": "Поиск",
+  "campaign.add": "Добавить рассылку",
+  "campaign.name": "Название рассылки",
+  "create.date": "Дата создания",
+  "scheduled.date": "Дата отправки",
+  "status": "Статус",
+  "contacts": "Контакты",
+  "new.campaign": "Новая рассылка",
+  "activate.message": "Вы уверены что хотите активировать рассылку?",
+  "delete.message": "Вы уверены что хотите удалить рассылку?",
+  "activate": "Активировать",
+  "delete": "Удалить",
+  "description": "Описание",
+  "message": "Сообщение",
+  "receivers": "Получатели",
+  "receivers.validate": "Номера телефонов должны быть разделены запятой!",
+  "send.sms": "Отправить СМС",
+  "immediately": "Немедленно",
+  "delay.sms.send": "Планировать отправку",
+  "draft": "Черновик",
+  "save": "Сохранить",
+  "scheduled": "Запланированная",
+  "executing": "В процессе",
+  "sms.example": "Привет, это пример СМС сообщения! :)"
 }

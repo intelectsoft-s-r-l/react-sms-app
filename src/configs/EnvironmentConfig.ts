@@ -1,13 +1,16 @@
 const dev = {
-  API_APP_URL: "https://api.example.com",
+  API_AUTH_URL: "https://dev.edi.md/ISAuthService/json",
+  API_SMS_URL: "https://dev.edi.md/SMSService/json",
 };
 
 const test = {
-  API_APP_URL: "https://api.example.com",
+  API_AUTH_URL: "https://dev.edi.md/ISAuthService/json",
+  API_SMS_URL: "https://dev.edi.md/SMSService/json",
 };
 
 const prod = {
-  API_APP_URL: "https://api.example.com",
+  API_AUTH_URL: "https://api.edi.md/ISAuthService/json",
+  API_SMS_URL: "https://api.edi.md/SMSService/json",
 };
 
 const getEnv = () => {

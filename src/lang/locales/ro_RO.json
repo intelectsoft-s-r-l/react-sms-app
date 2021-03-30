@@ -35,8 +35,10 @@
   "auth.ConfirmRegistration.Msg2": "Verificați email-ul și confirmați înregistrarea apăsând pe link-ul trimis de noi!",
   "auth.GoToLogin": "La logare",
 
-  "sidenav.home": "Acasă",
   "sidenav.dashboard": "Dashboard",
+  "sidenav.campaign": "Campanie",
+  "sidenav.tariffs": "Tarife",
+  "sidenav.settings": "Setări",
 
   "header.logout.message": "Sunteți sigur că doriți să vă deconectați?",
   "header.logout.button": "Deconectați-vă",
@@ -107,5 +109,30 @@
   "theme.Light": "Light",
   "theme.Dark": "Dark",
   "theme.Locale": "Localizare",
-  "theme.Language": "Limbă"
+  "theme.Language": "Limbă",
+
+  "search": "Search",
+  "campaign.add": "Adaugă o campanie",
+  "campaign.name": "Denumirea campaniei",
+  "create.date": "Data creării",
+  "scheduled.date": "Data programată",
+  "status": "Statut",
+  "contacts": "Contacte",
+  "new.campaign": "Campanie nouă",
+  "activate.message": "Sunteți sigur(ă) că doriți să activați campania?",
+  "delete.message": "Sunteți sigur(ă) că doriți să ștergeți campania?",
+  "activate": "Activează",
+  "delete": "Șterge",
+  "description": "Descriere",
+  "message": "Mesaj",
+  "receivers": "Destinatari",
+  "receivers.validate": "Numerele de telefoane trebuie să fie separate de virgulă!",
+  "send.sms": "Trimite SMS",
+  "immediately": "Imediat",
+  "delay.sms.send": "Planifică trimiterea",
+  "draft": "Draft",
+  "save": "Salvează",
+  "scheduled": "Planificată",
+  "executing": "În proces",
+  "sms.example": "Salut, acesta este un exemplu SMS! :)"
 }

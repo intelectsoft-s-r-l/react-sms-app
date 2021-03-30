@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Menu, Dropdown, Avatar, Modal } from "antd";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import {
   SettingOutlined,
   QuestionCircleOutlined,
@@ -12,6 +12,7 @@ import { signOut } from "redux/actions/Auth";
 import { NavLink } from "react-router-dom";
 import IntlMessage from "components/util-components/IntlMessage";
 import TranslateText from "utils/translate";
+import { IState } from "redux/reducers";
 interface INavProfile {
   signOut?: () => void;
 }
@@ -30,6 +31,7 @@ const menuItem = [
 
 const NavProfile = ({ signOut }: INavProfile) => {
   const { confirm } = Modal;
+  const FirstName = useSelector((state: IState) => state.account?.FirstName);
   const confirmLogout = () => {
     confirm({
       title: TranslateText("header.logout.message"),
@@ -37,6 +39,7 @@ const NavProfile = ({ signOut }: INavProfile) => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(signOut!());
+            document.cookie = "Token=";
           }, 1000);
         });
       },
@@ -49,7 +52,7 @@ const NavProfile = ({ signOut }: INavProfile) => {
         <div className="d-flex">
           <Avatar size={45} src={""} icon={<UserOutlined />} />
           <div className="pl-3">
-            <h4 className="mb-0">{"User"}</h4>
+            <h4 className="mb-0">{FirstName ?? "User"}</h4>
           </div>
         </div>
       </div>

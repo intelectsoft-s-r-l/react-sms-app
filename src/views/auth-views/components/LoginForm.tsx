@@ -10,8 +10,9 @@ import {
   showAuthMessage,
   hideAuthMessage,
   authenticated,
+  authorizeUser,
 } from "redux/actions/Auth";
-import { updateSettings } from "redux/actions/Account";
+import { getProfileInfo, updateSettings } from "redux/actions/Account";
 import { motion } from "framer-motion";
 import { NavLink, useHistory } from "react-router-dom";
 import { hideLoading } from "redux/actions/Auth";
@@ -19,7 +20,10 @@ import IntlMessage from "components/util-components/IntlMessage";
 import { IState } from "redux/reducers";
 import { IAuth } from "redux/reducers/Auth";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
+import Utils from "utils";
+import { EnErrorCode } from "api";
 
+type OnLogin = { email: string; password: string };
 const LoginForm = ({
   showForgetPassword,
   hideAuthMessage,
@@ -28,13 +32,26 @@ const LoginForm = ({
   extra,
   loading,
   showMessage,
+  hideLoading,
   message,
   authenticated,
+  authorizeUser,
+  getProfileInfo,
 }: any) => {
   const history = useHistory();
-  const onLogin = async ({ email, password }: { [key: string]: string }) => {
-    authenticated("FAKE TOKEN");
-    history.push(APP_PREFIX_PATH);
+  const onLogin = ({ email, password }: OnLogin) => {
+    showLoading();
+    setTimeout(async () => {
+      hideLoading();
+      const response = await authorizeUser(
+        email,
+        Utils.encryptInput(password, process!.env!.REACT_APP_KEY!.toString()!)
+      );
+      if (response.ErrorCode === EnErrorCode.NO_ERROR) {
+        getProfileInfo();
+        history.push(APP_PREFIX_PATH);
+      }
+    }, 1000);
   };
   const onGoogleLogin = () => {
     showLoading();
@@ -163,7 +180,6 @@ const mapStateToProps = ({ auth }: IState) => {
     loading,
     message,
     showMessage,
-    token,
     redirect,
     userActivated,
   } = auth as IAuth;
@@ -171,7 +187,6 @@ const mapStateToProps = ({ auth }: IState) => {
     loading,
     message,
     showMessage,
-    token,
     redirect,
     userActivated,
   };
@@ -179,11 +194,13 @@ const mapStateToProps = ({ auth }: IState) => {
 
 const mapDispatchToProps = {
   showAuthMessage,
+  authorizeUser,
   showLoading,
   hideAuthMessage,
   authenticated,
   updateSettings,
   hideLoading,
+  getProfileInfo,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

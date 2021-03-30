@@ -1,4 +1,9 @@
-import { DashboardOutlined, HomeOutlined } from "@ant-design/icons";
+import {
+  DashboardOutlined,
+  MessageOutlined,
+  DollarOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 
 export interface INavTree {
   key: string;
@@ -11,18 +16,34 @@ export interface INavTree {
 
 const dashBoardNavTree = [
   {
-    key: "home",
-    path: "/app/home",
-    title: "sidenav.home",
-    icon: HomeOutlined,
-    breadcrumb: true,
-    submenu: [],
-  },
-  {
     key: "dashboard",
     path: "/app/dashboard",
     title: "sidenav.dashboard",
     icon: DashboardOutlined,
+    breadcrumb: true,
+    submenu: [],
+  },
+  {
+    key: "campaign",
+    path: "/app/campaign",
+    title: "sidenav.campaign",
+    icon: MessageOutlined,
+    breadcrumb: true,
+    submenu: [],
+  },
+  {
+    key: "tariffs",
+    path: "/app/tariffs",
+    title: "sidenav.tariffs",
+    icon: DollarOutlined,
+    breadcrumb: true,
+    submenu: [],
+  },
+  {
+    key: "settings",
+    path: "/app/settings",
+    title: "sidenav.settings",
+    icon: SettingOutlined,
     breadcrumb: true,
     submenu: [],
   },

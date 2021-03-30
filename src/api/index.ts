@@ -1,12 +1,17 @@
-import { message } from "antd";
+import { message, notification } from "antd";
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
   CancelTokenSource,
 } from "axios";
-import { HIDE_LOADING } from "redux/constants/Auth";
+import { API_AUTH_URL } from "configs/AppConfig";
+import { EXPIRE_TIME } from "constants/Messages";
+import Cookies from "js-cookie";
+import { AUTHENTICATED, HIDE_LOADING, SIGNOUT } from "redux/constants/Auth";
 import store from "redux/store";
+import TranslateText from "utils/translate";
+import { ApiDecorator, ApiResponse } from "./types";
 
 export enum EnErrorCode {
   INTERNAL_ERROR = -1,
@@ -27,7 +32,7 @@ declare module "axios" {
 
 class HttpService {
   public readonly instance: AxiosInstance;
-  private _token: string;
+  private _token: string | undefined;
   public _source: CancelTokenSource;
 
   public constructor(baseURL: string) {
@@ -35,7 +40,7 @@ class HttpService {
       baseURL,
     });
     this._source = axios.CancelToken.source();
-    this._token = store.getState().auth.token;
+    this._token = Cookies.get("Token");
     this._initializeResponseInterceptor();
     this._initializeRequestInterceptor();
   }
@@ -53,6 +58,14 @@ class HttpService {
     );
   };
 
+  private _RefreshToken = async () =>
+    this.instance.get<ApiDecorator<ApiResponse, "Token", string>>(
+      `${API_AUTH_URL}/RefreshToken`
+    );
+
+  private setToken = (Token: string) => {
+    this._token = Token;
+  };
   private _handleRequest = (config: AxiosRequestConfig) => {
     console.log(config);
     return {
@@ -65,6 +78,59 @@ class HttpService {
 
   private _handleResponse = (response: AxiosResponse) => {
     console.log(response);
+    if (response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN) {
+      return this._RefreshToken().then(async (tokenData) => {
+        if (tokenData && tokenData.ErrorCode === 0) {
+          const { Token } = tokenData;
+          this.setToken(Token);
+          Cookies.set("Token", Token, { expires: 1 });
+          store.dispatch({ type: AUTHENTICATED, token: Token });
+          if (response.config.method === "get") {
+            response.config.params = {
+              ...response.config.params,
+              Token,
+            };
+            return await this.instance.request(response.config);
+          }
+          if (response.config.method === "post") {
+            response.config.data = {
+              ...JSON.parse(response.config.data),
+              Token,
+            };
+            return await this.instance.request(response.config);
+          }
+        } else {
+          const key = "updatable";
+          message
+            .loading({
+              content: TranslateText(EXPIRE_TIME),
+              key,
+              duration: 1.5,
+            })
+            .then(() => {
+              store.dispatch({ type: SIGNOUT });
+            });
+        }
+      });
+    } else if (
+      response.data.ErrorCode !== EnErrorCode.NO_ERROR &&
+      response.data.ErrorCode !== EnErrorCode.EXPIRED_TOKEN &&
+      response.data.ErrorCode !== EnErrorCode.INCORECT_AUTH_DATA &&
+      response.data.ErrorCode !== EnErrorCode.APIKEY_NOT_EXIST
+    ) {
+      message.error({
+        content: `Error: ${response.data.ErrorMessage}`,
+        key: "updatable",
+        duration: 2.5,
+      });
+    }
+    if (response.data.ErrorCode === EnErrorCode.APIKEY_NOT_EXIST) {
+      notification.warning({
+        message: `Warning: ${response.data.ErrorMessage}!`,
+        description: "Generate a new APIKey in Integration tab!",
+        duration: 2.5,
+      });
+    }
     return response.data;
   };
   private _handleError = async (error: AxiosResponse) => {
