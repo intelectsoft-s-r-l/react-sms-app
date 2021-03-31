@@ -3,7 +3,6 @@ import reducers, { IState } from "redux/reducers";
 import { loadState, saveState } from "utils/localStorage";
 import throttle from "lodash/throttle";
 import thunk, { ThunkAction } from "redux-thunk";
-import Cookies from "js-cookie";
 
 export type ThunkResult<ReturnType> = ThunkAction<
   ReturnType,

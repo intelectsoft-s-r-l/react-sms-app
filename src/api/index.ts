@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
   CancelTokenSource,
 } from "axios";
-import { API_AUTH_URL } from "configs/AppConfig";
+import { API_AUTH_URL, DOMAIN } from "configs/AppConfig";
 import { EXPIRE_TIME } from "constants/Messages";
 import Cookies from "js-cookie";
 import { AUTHENTICATED, HIDE_LOADING, SIGNOUT } from "redux/constants/Auth";
@@ -65,6 +65,11 @@ class HttpService {
 
   private setToken = (Token: string) => {
     this._token = Token;
+    Cookies.set("Token", Token, {
+      expires: 1,
+      domain: DOMAIN,
+      path: "/",
+    });
   };
   private _handleRequest = (config: AxiosRequestConfig) => {
     console.log(config);
@@ -83,8 +88,6 @@ class HttpService {
         if (tokenData && tokenData.ErrorCode === 0) {
           const { Token } = tokenData;
           this.setToken(Token);
-          Cookies.set("Token", Token, { expires: 1 });
-          store.dispatch({ type: AUTHENTICATED, token: Token });
           if (response.config.method === "get") {
             response.config.params = {
               ...response.config.params,

@@ -1,3 +1,4 @@
+import { DOMAIN } from "configs/AppConfig";
 import Cookies from "js-cookie";
 import {
   AUTHENTICATED,
@@ -58,7 +59,12 @@ const auth = (state = initState, action: any) => {
         showMessage: false,
       };
     case SIGNOUT:
-      Cookies.remove("Token");
+      Cookies.remove("Token", {
+        expires: 1,
+        domain: DOMAIN,
+        path: "/",
+      });
+      window.location.reload();
       return {
         ...state,
         token: null,

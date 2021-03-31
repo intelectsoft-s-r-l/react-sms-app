@@ -13,6 +13,7 @@ import { AuthorizeUser } from "api/auth/types";
 import { getProfileInfo } from "./Account";
 import Utils from "utils";
 import Cookies from "js-cookie";
+import { DOMAIN } from "configs/AppConfig";
 
 export const authenticated = (token: string) => ({
   type: AUTHENTICATED,
@@ -47,8 +48,11 @@ export const authorizeUser = (
     .Login(email, password)
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-        Cookies.set("Token", data.Token, { expires: 7 });
-        dispatch(authenticated(data.Token));
+        Cookies.set("Token", data.Token, {
+          expires: 1,
+          domain: DOMAIN,
+          path: "/",
+        });
         return data;
       } else {
         dispatch(showAuthMessage(data.ErrorMessage.toString()));

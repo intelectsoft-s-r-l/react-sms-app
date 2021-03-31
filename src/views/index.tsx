@@ -16,7 +16,6 @@ import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
 import { IState } from "redux/reducers";
 import { ITheme } from "redux/reducers/Theme";
 import { IAuth } from "redux/reducers/Auth";
-import getCookie from "utils/cookie";
 import Utils from "utils";
 import store from "redux/store";
 import Cookies from "js-cookie";
@@ -49,7 +48,6 @@ export const Views = (props: IViews) => {
   const { locale, location, history } = props;
   const token = useSelector((state: IState) => state.auth?.token);
   const currentAppLocale = locale ? AppLocale[locale] : "en";
-
   return (
     <IntlProvider
       locale={currentAppLocale.locale}
