@@ -22,6 +22,7 @@ import { IAuth } from "redux/reducers/Auth";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
 import Utils from "utils";
 import { EnErrorCode } from "api";
+import { API_PUBLIC_KEY } from "constants/ApiConstant";
 
 type OnLogin = { email: string; password: string };
 const LoginForm = ({
@@ -45,7 +46,7 @@ const LoginForm = ({
       hideLoading();
       const response = await authorizeUser(
         email,
-        Utils.encryptInput(password, process!.env!.REACT_APP_KEY!.toString()!)
+        Utils.encryptInput(password, API_PUBLIC_KEY)
       );
       if (response.ErrorCode === EnErrorCode.NO_ERROR) {
         history.push(APP_PREFIX_PATH);

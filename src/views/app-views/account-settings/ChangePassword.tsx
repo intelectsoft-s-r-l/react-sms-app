@@ -10,6 +10,7 @@ import { IAuth } from "../../../redux/reducers/Auth";
 import { ITheme } from "../../../redux/reducers/Theme";
 import TranslateText from "../../../utils/translate";
 import { FormInstance } from "antd/lib/form";
+import { API_PUBLIC_KEY } from "constants/ApiConstant";
 
 type onFinish = {
   currentPassword: string;
@@ -22,8 +23,8 @@ export class ChangePassword extends React.Component {
     this.setState({ loading: true });
     return await new AuthService()
       .ChangePassword(
-        Utils.encryptInput(newPassword, process.env.REACT_APP_KEY),
-        Utils.encryptInput(currentPassword, process.env.REACT_APP_KEY)
+        Utils.encryptInput(newPassword, API_PUBLIC_KEY),
+        Utils.encryptInput(currentPassword, API_PUBLIC_KEY)
       )
       .then((data) => {
         this.setState({ loading: false });
