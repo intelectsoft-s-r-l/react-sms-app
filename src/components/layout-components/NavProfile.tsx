@@ -32,6 +32,7 @@ const menuItem = [
 const NavProfile = ({ signOut }: INavProfile) => {
   const { confirm } = Modal;
   const FirstName = useSelector((state: IState) => state.account?.FirstName);
+  const Photo = useSelector((state: IState) => state.account?.Photo);
   const confirmLogout = () => {
     confirm({
       title: TranslateText("header.logout.message"),
@@ -39,7 +40,6 @@ const NavProfile = ({ signOut }: INavProfile) => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(signOut!());
-            document.cookie = "Token=";
           }, 1000);
         });
       },
@@ -50,7 +50,7 @@ const NavProfile = ({ signOut }: INavProfile) => {
     <div className="nav-profile nav-dropdown">
       <div className="nav-profile-header">
         <div className="d-flex">
-          <Avatar size={45} src={""} icon={<UserOutlined />} />
+          <Avatar size={45} src={Photo} icon={<UserOutlined />} />
           <div className="pl-3">
             <h4 className="mb-0">{FirstName ?? "User"}</h4>
           </div>
@@ -84,7 +84,7 @@ const NavProfile = ({ signOut }: INavProfile) => {
     <Dropdown placement="bottomRight" overlay={profileMenu} trigger={["click"]}>
       <Menu className="d-flex align-item-center" mode="horizontal">
         <Menu.Item>
-          <Avatar src={""} icon={<UserOutlined />} />
+          <Avatar src={Photo} icon={<UserOutlined />} />
         </Menu.Item>
       </Menu>
     </Dropdown>
