@@ -48,7 +48,6 @@ const LoginForm = ({
         Utils.encryptInput(password, process!.env!.REACT_APP_KEY!.toString()!)
       );
       if (response.ErrorCode === EnErrorCode.NO_ERROR) {
-        getProfileInfo();
         history.push(APP_PREFIX_PATH);
       }
     }, 1000);
