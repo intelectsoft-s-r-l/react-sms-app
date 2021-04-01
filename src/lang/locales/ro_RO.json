@@ -134,5 +134,20 @@
   "save": "Salvează",
   "scheduled": "Planificată",
   "executing": "În proces",
-  "sms.example": "Salut, acesta este un exemplu SMS! :)"
+  "sms.example": "Salut, acesta este un exemplu SMS! :)",
+  "latest": "Ultimele SMS Tranzacții",
+  "list": "Lista de tranzacții",
+  "today": "Astăzi",
+  "week": "Săptămână",
+  "month": "Lună",
+  "phone": "Telefon",
+  "sent.date": "Data trimiterii",
+  "message.type": "Tipul mesajului",
+  "state": "Stare",
+  "quantity": "Cantitate",
+  "download": "Descarcă",
+  "sent": "Trimise",
+  "failed": "Eșuate",
+  "rejected": "Respinse",
+  "waiting": "În așteptare"
 }
