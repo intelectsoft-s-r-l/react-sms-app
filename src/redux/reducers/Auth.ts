@@ -1,3 +1,4 @@
+import HttpService from "api";
 import { DOMAIN } from "configs/AppConfig";
 import Cookies from "js-cookie";
 import {
@@ -59,11 +60,8 @@ const auth = (state = initState, action: any) => {
         showMessage: false,
       };
     case SIGNOUT:
-      Cookies.remove("Token", {
-        expires: 1,
-        domain: DOMAIN,
-        path: "/",
-      });
+      if (new HttpService().company_id) Utils.removeManageToken();
+      else Utils.removeToken();
       window.location.reload();
       return {
         ...state,

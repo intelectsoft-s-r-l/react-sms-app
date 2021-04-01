@@ -8,23 +8,23 @@ import { authenticated } from "redux/actions/Auth";
 import { IState } from "redux/reducers";
 import { useQuery } from "utils/hooks/useQuery";
 import Cookies from "js-cookie";
+import Utils from "utils";
 
 function Validate(props: RouteComponentProps) {
   const dispatch = useDispatch();
   const query = useQuery();
 
   useEffect(() => {
-    try {
-      if (query.get("token")) {
-        Cookies.set("Token", query.get("token")!.toString(), {
-          expires: 1,
-          domain: DOMAIN,
-          path: "/",
-        });
-        props.history.push(APP_PREFIX_PATH);
-      }
-    } catch {
-      props.history.push(AUTH_PREFIX_PATH);
+    if (Boolean(query.get("isManage"))) {
+      sessionStorage.setItem("c_id", query.get("company_id")!);
+      Utils.setManageToken(
+        `ManageToken_${query.get("company_id")}`,
+        query.get("token")!
+      );
+      props.history.push(APP_PREFIX_PATH);
+    } else {
+      Utils.setToken(query.get("token")!);
+      props.history.push(APP_PREFIX_PATH);
     }
   }, []);
   return <div>Loading...</div>;

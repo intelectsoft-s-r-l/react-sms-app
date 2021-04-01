@@ -7,7 +7,6 @@ import { useQuery } from "utils/hooks/useQuery";
 import Loading from "components/shared-components/Loading";
 import { Link } from "react-router-dom";
 import { SmsService } from "api/sms";
-import EditCampaignForm from "./EditCampaignForm";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Phone from "components/util-components/Phone";
 import CampaignForm from "./CampaignForm";

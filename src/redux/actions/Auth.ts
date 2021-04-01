@@ -48,11 +48,7 @@ export const authorizeUser = (
     .Login(email, password)
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-        Cookies.set("Token", data.Token, {
-          expires: 1,
-          domain: DOMAIN,
-          path: "/",
-        });
+        Utils.setToken(data.Token);
         return data;
       } else {
         dispatch(showAuthMessage(data.ErrorMessage.toString()));

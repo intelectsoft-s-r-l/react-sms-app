@@ -5,6 +5,9 @@ import { RcFile } from "antd/lib/upload";
 import moment from "moment";
 import { showAuthMessage } from "redux/actions/Auth";
 import store from "redux/store";
+import Cookies from "js-cookie";
+import { DOMAIN } from "configs/AppConfig";
+import HttpService from "api";
 
 class Utils {
   static getNameInitial(name: string) {
@@ -263,6 +266,32 @@ class Utils {
   static padNumber(elem: any) {
     // Add 0000 before numbers, ex. 00001, 00023, 01567
     return ("00000" + elem).substring(elem.length);
+  }
+
+  static setManageToken(manageToken: string, value: any) {
+    Cookies.set(manageToken, value, {
+      domain: DOMAIN,
+      path: "/",
+    });
+  }
+
+  static setToken(value: any) {
+    Cookies.set("Token", value, { expires: 1, domain: DOMAIN, path: "/" });
+  }
+
+  static removeToken() {
+    Cookies.remove("Token", { expires: 1, domain: DOMAIN, path: "/" });
+  }
+  static removeManageToken() {
+    Cookies.remove(`ManageToken_${new HttpService().company_id}`, {
+      domain: DOMAIN,
+      path: "/",
+    });
+  }
+
+  static removeAllTokens() {
+    Utils.removeToken();
+    Utils.removeManageToken();
   }
 }
 

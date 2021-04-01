@@ -1,12 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
 import { Col, PageHeader, Row, Form } from "antd";
-import AddCampaignForm from "./AddCampaignForm";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Phone from "components/util-components/Phone";
 import TranslateText from "utils/translate";
 import CampaignForm from "./CampaignForm";
-import { MAX_SMS } from ".";
+import { MAX_SMS, send } from ".";
+import Utils from "utils";
+import { SmsService } from "api/sms";
+import { EnErrorCode } from "api";
+import Loading from "components/shared-components/Loading";
+import moment from "moment";
 
 const AddCampaignPage = (props: any) => {
   const [phoneLength, setPhoneLength] = useState<number>(0);
@@ -16,7 +20,30 @@ const AddCampaignPage = (props: any) => {
   const [radioVal, setRadioVal] = useState<number>(2);
   const [date, setDate] = useState<any>();
   const [message, setMessage] = useState<any>(TranslateText("sms.example"));
-  const onFinish = (values: any) => {};
+  const [loading, setLoading] = useState(false);
+  const createCampaign = async (values: any) => {
+    setLoading(true);
+    console.log({
+      ...values,
+      ScheduledDate: radioVal === send.NOW ? "" : moment(date),
+    });
+    return await new SmsService()
+      .SMS_UpdateCampaign({
+        ...values,
+        ScheduledDate:
+          radioVal !== send.NOW ? Utils.handleDotNetDate(date) : null,
+        Status: radioVal,
+      })
+      .then((data) => {
+        setLoading(false);
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          props.history.push(`${props.match.url}/success`);
+        }
+      });
+  };
+  const onFinish = async (values: any) => {
+    createCampaign(values);
+  };
   const onMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
     setPhoneLength(e.target.value.length);
@@ -28,6 +55,7 @@ const AddCampaignPage = (props: any) => {
       setMaxPhoneLength(MAX_SMS);
     }
   };
+  if (loading) return <Loading />;
   return (
     <PageHeader
       title={TranslateText("campaign.add")}

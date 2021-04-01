@@ -1,4 +1,5 @@
 import * as React from "react";
+import Cookies from "js-cookie";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { Menu, Layout } from "antd";
@@ -16,6 +17,7 @@ import utils from "utils";
 import NavProfile from "components/layout-components/NavProfile";
 import { ITheme } from "redux/reducers/Theme";
 import { IState } from "redux/reducers";
+import { IAccount } from "redux/reducers/Account";
 
 const { Header } = Layout;
 
@@ -28,6 +30,7 @@ const HeaderNav = (props: any) => {
     toggleCollapsedNav,
     onMobileNavToggle,
     isMobile,
+    Company,
   } = props;
   const [searchActive, setSearchActive] = useState(false);
 
@@ -85,6 +88,19 @@ const HeaderNav = (props: any) => {
               )}
             </Menu>
           </div>
+          {!isNavTop &&
+            Cookies.get(`ManageToken_${sessionStorage.getItem("c_id")}`) && (
+              <div className="nav-left">
+                <div
+                  className={`text-${
+                    headerNavColor === "#ffffff" ? "dark" : "white"
+                  } px-5`}
+                  style={{ fontSize: "20px" }}
+                >
+                  {`ATENTIE! Administrati: ${Company}`}
+                </div>
+              </div>
+            )}
           <div className="nav-right">
             <NavPanel />
             <NavProfile />
@@ -96,10 +112,12 @@ const HeaderNav = (props: any) => {
   );
 };
 
-const mapStateToProps = ({ theme }: IState) => {
+const mapStateToProps = ({ theme, account }: IState) => {
   const { navCollapsed, navType, headerNavColor, mobileNav } = theme as ITheme;
+  const { Company } = account as IAccount;
   return {
     navCollapsed,
+    Company,
     navType,
     headerNavColor,
     mobileNav,

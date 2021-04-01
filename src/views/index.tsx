@@ -19,6 +19,7 @@ import { IAuth } from "redux/reducers/Auth";
 import Utils from "utils";
 import store from "redux/store";
 import Cookies from "js-cookie";
+import HttpService from "api";
 interface IViews extends ITheme, IAuth, RouteComponentProps {}
 
 function RouteInterceptor({
@@ -63,7 +64,8 @@ export const Views = (props: IViews) => {
           </Route>
           <RouteInterceptor
             path={APP_PREFIX_PATH}
-            isAuthenticated={Cookies.get("Token")}
+            // company_id has to be cleared everytime we authorize
+            isAuthenticated={new HttpService().token}
             component={AppLayout}
           />
         </Switch>

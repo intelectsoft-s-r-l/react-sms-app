@@ -49,6 +49,8 @@ const LoginForm = ({
         Utils.encryptInput(password, API_PUBLIC_KEY)
       );
       if (response.ErrorCode === EnErrorCode.NO_ERROR) {
+        // We clear the session storage in order to reset the way tokens are handled
+        sessionStorage.clear();
         history.push(APP_PREFIX_PATH);
       }
     }, 1000);

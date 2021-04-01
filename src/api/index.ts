@@ -10,6 +10,7 @@ import { EXPIRE_TIME } from "constants/Messages";
 import Cookies from "js-cookie";
 import { AUTHENTICATED, HIDE_LOADING, SIGNOUT } from "redux/constants/Auth";
 import store from "redux/store";
+import Utils from "utils";
 import TranslateText from "utils/translate";
 import { ApiDecorator, ApiResponse } from "./types";
 
@@ -32,15 +33,19 @@ declare module "axios" {
 
 class HttpService {
   public readonly instance: AxiosInstance;
-  private _token: string | undefined;
+  public token: string | undefined;
+  public company_id: any;
   public _source: CancelTokenSource;
 
-  public constructor(baseURL: string) {
+  public constructor(baseURL = "") {
     this.instance = axios.create({
       baseURL,
     });
     this._source = axios.CancelToken.source();
-    this._token = Cookies.get("Token");
+    this.company_id = sessionStorage.getItem("c_id");
+    this.token = this.company_id
+      ? Cookies.get(`ManageToken_${this.company_id}`)
+      : Cookies.get("Token");
     this._initializeResponseInterceptor();
     this._initializeRequestInterceptor();
   }
@@ -64,19 +69,18 @@ class HttpService {
     );
 
   private setToken = (Token: string) => {
-    this._token = Token;
-    Cookies.set("Token", Token, {
-      expires: 1,
-      domain: DOMAIN,
-      path: "/",
-    });
+    this.token = Token;
+    // We verify by company_id because managetoken is a cookie and it's shared between tabs
+    this.company_id
+      ? Utils.setManageToken(`ManageToken_${this.company_id}`, Token)
+      : Utils.setToken(Token);
   };
   private _handleRequest = (config: AxiosRequestConfig) => {
     console.log(config);
     return {
       ...config,
-      data: { ...config.data, Token: this._token },
-      params: { ...config.params, Token: this._token },
+      data: { ...config.data, Token: this.token },
+      params: { ...config.params, Token: this.token },
       cancelToken: this._source.token,
     };
   };
@@ -130,7 +134,7 @@ class HttpService {
     if (response.data.ErrorCode === EnErrorCode.APIKEY_NOT_EXIST) {
       notification.warning({
         message: `Warning: ${response.data.ErrorMessage}!`,
-        description: "Generate a new APIKey in Integration tab!",
+        description: "Generate a new APIKey in settings menu!",
         duration: 2.5,
       });
     }

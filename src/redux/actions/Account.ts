@@ -3,7 +3,7 @@ import { AuthService } from "api/auth";
 import { CLEAR_INFO, UPDATE_SETTINGS } from "redux/constants/Account";
 import { IAccount } from "redux/reducers/Account";
 import { ThunkResult } from "redux/store";
-import { onLocaleChange } from "./Theme";
+import { onHeaderNavColorChange, onLocaleChange } from "./Theme";
 
 enum EnLang {
   RO = 0,
@@ -23,6 +23,9 @@ export const clearSettings = () => ({
 export const getProfileInfo = (): ThunkResult<void> => async (dispatch) => {
   return new AuthService().GetProfileInfo().then((data) => {
     if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+      if (window.location.origin.includes("test"))
+        dispatch(onHeaderNavColorChange("#DE4436"));
+
       dispatch(updateSettings(data.User));
       switch (data.User.UiLanguage) {
         case EnLang.RO:
