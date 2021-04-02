@@ -94,10 +94,10 @@ const HeaderNav = (props: any) => {
                 <div
                   className={`text-${
                     headerNavColor === "#ffffff" ? "dark" : "white"
-                  } px-5`}
+                  }`}
                   style={{ fontSize: "20px" }}
                 >
-                  {`ATENTIE! Administrati: ${Company}`}
+                  {Company}
                 </div>
               </div>
             )}

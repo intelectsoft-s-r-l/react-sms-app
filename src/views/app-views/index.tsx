@@ -22,8 +22,8 @@ export const AppViews = ({ getProfileInfo }: any) => {
           component={lazy(() => import(`./campaign`))}
         />
         <Route
-          path={`${APP_PREFIX_PATH}/tariffs`}
-          component={lazy(() => import(`./tariffs`))}
+          path={`${APP_PREFIX_PATH}/pricing-plans`}
+          component={lazy(() => import(`./pricing-plans`))}
         />
         <Route
           path={`${APP_PREFIX_PATH}/settings`}

@@ -25,10 +25,11 @@ import { ColumnsType } from "antd/es/table/interface";
 import TranslateText from "utils/translate";
 // @ts-ignore
 import shortid from "shortid";
-
-interface ISmsDashboard extends RouteComponentProps {
-  APIKey: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { IState } from "redux/reducers";
+import { PortalService } from "api/client";
+import { EnErrorCode } from "api";
+import { getAppInfo } from "redux/actions/App";
 
 enum EnSmsType {
   INFO = 0,
@@ -88,8 +89,10 @@ const tableColumns: ColumnsType<ISmsList> = [
     dataIndex: "Quantity",
   },
 ];
-const SmsDashboard = (props: ISmsDashboard) => {
+const SmsDashboard = () => {
   const instance = new SmsService();
+  const APIKey = useSelector((state: IState) => state.app.ApyKey) ?? "";
+
   const [date, setDate] = useState<any>([
     moment().clone().startOf("month"),
     moment().clone().endOf("month"),
@@ -123,7 +126,7 @@ const SmsDashboard = (props: ISmsDashboard) => {
     secondDate = date[1].format("DD-MM-YYYY")
   ) => {
     return await instance
-      .Info_GetDetailByPeriod(props.APIKey, firstDate, secondDate)
+      .Info_GetDetailByPeriod(APIKey, firstDate, secondDate)
       .then((data) => {
         setLoading(false);
         if (data && data.ErrorCode === 0) {
@@ -150,7 +153,7 @@ const SmsDashboard = (props: ISmsDashboard) => {
       });
   };
   const getSmsInfo = async () => {
-    return instance.Info_GetTotal(props.APIKey).then(async (data) => {
+    return instance.Info_GetTotal(APIKey).then(async (data) => {
       if (data && data.ErrorCode === 0) {
         await getSmsList();
         setStatusData([

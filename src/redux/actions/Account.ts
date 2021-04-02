@@ -3,6 +3,7 @@ import { AuthService } from "api/auth";
 import { CLEAR_INFO, UPDATE_SETTINGS } from "redux/constants/Account";
 import { IAccount } from "redux/reducers/Account";
 import { ThunkResult } from "redux/store";
+import { getAppInfo } from "./App";
 import { onHeaderNavColorChange, onLocaleChange } from "./Theme";
 
 enum EnLang {
@@ -21,22 +22,26 @@ export const clearSettings = () => ({
 });
 
 export const getProfileInfo = (): ThunkResult<void> => async (dispatch) => {
-  return new AuthService().GetProfileInfo().then((data) => {
-    if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-      if (window.location.origin.includes("test"))
-        dispatch(onHeaderNavColorChange("#DE4436"));
+  return new AuthService()
+    .GetProfileInfo()
+    .then((data) => {
+      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+        // If it's test environment change header nav color to red
+        if (window.location.origin.includes("test"))
+          dispatch(onHeaderNavColorChange("#DE4436"));
 
-      dispatch(updateSettings(data.User));
-      switch (data.User.UiLanguage) {
-        case EnLang.RO:
-          dispatch(onLocaleChange("ro"));
-          break;
-        case EnLang.RU:
-          dispatch(onLocaleChange("ru"));
-          break;
-        default:
-          dispatch(onLocaleChange("en"));
+        dispatch(updateSettings(data.User));
+        switch (data.User.UiLanguage) {
+          case EnLang.RO:
+            dispatch(onLocaleChange("ro"));
+            break;
+          case EnLang.RU:
+            dispatch(onLocaleChange("ru"));
+            break;
+          default:
+            dispatch(onLocaleChange("en"));
+        }
       }
-    }
-  });
+    })
+    .then(() => dispatch(getAppInfo()));
 };

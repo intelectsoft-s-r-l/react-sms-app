@@ -4,6 +4,7 @@ import * as React from "react";
 import TranslateText from "utils/translate";
 import { send } from ".";
 import moment from "moment";
+import Utils from "utils";
 export const rules = {
   Name: [
     {
@@ -54,8 +55,6 @@ function CampaignForm({
   maxPhoneLength,
   radioVal,
   setRadioVal,
-  date,
-  setDate,
 }: any) {
   return (
     <Card>
@@ -110,7 +109,7 @@ function CampaignForm({
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={24}>
-            <Form.Item label={TranslateText("send.sms")}>
+            <div className="mb-3">
               <Radio.Group
                 value={radioVal}
                 onChange={(e) => setRadioVal(e.target.value)}
@@ -125,17 +124,18 @@ function CampaignForm({
                   {TranslateText("draft")}
                 </Radio>
               </Radio.Group>
-              <div>
-                <DatePicker
-                  format={"DD/MM/YYYY"}
-                  value={moment(date)}
-                  onChange={(e) => setDate(e)}
-                  className={`${radioVal === send.DELAY ? "" : "d-none"}`}
-                  disabledDate={(current) =>
-                    current && current.valueOf() < Date.now()
-                  }
-                />
-              </div>
+            </div>
+            <Form.Item
+              name="ScheduledDate"
+              className={`${radioVal === send.DELAY ? "" : "d-none"}`}
+              initialValue={moment(Date.now())}
+            >
+              <DatePicker
+                format={"DD/MM/YYYY"}
+                disabledDate={(current) =>
+                  current && current.valueOf() < Date.now()
+                }
+              />
             </Form.Item>
             <Form.Item>
               <div>

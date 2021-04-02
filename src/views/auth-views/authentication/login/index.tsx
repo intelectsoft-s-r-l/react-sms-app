@@ -1,11 +1,10 @@
 import * as React from "react";
 import { Col, Row } from "antd";
-import { NavLink } from "react-router-dom";
 import LoginForm from "views/auth-views/components/LoginForm";
 import { IListOption } from "components/layout-components/ThemeConfigurator";
 import NavLanguage from "components/layout-components/NavLanguage";
 import IntlMessage from "components/util-components/IntlMessage";
-import { APP_NAME } from "configs/AppConfig";
+import { APP_NAME, PORTAL_URL } from "configs/AppConfig";
 const backgroundStyle = {
   backgroundImage: `url(${process.env.PUBLIC_URL}/img/others/img-17.jpg)`,
   backgroundRepeat: "no-repeat",
@@ -48,9 +47,13 @@ const LoginTwo = (props: any) => {
                     </h1>
                     <p>
                       <IntlMessage id={"auth.DontHaveAnAccountYet"} />{" "}
-                      <NavLink to="/auth/register">
+                      <a
+                        onClick={() =>
+                          window.open(`${PORTAL_URL}/auth/register`)
+                        }
+                      >
                         <IntlMessage id={"auth.SignUp"} />
-                      </NavLink>
+                      </a>
                     </p>
                   </div>
                   <div>

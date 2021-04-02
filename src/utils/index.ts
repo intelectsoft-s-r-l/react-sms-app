@@ -293,6 +293,9 @@ class Utils {
     Utils.removeToken();
     Utils.removeManageToken();
   }
+  static isAscii(text: string) {
+    if (/^[\x00-\x7F]*$/.test(text)) return true;
+  }
 }
 
 export default Utils;

@@ -1,11 +1,9 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { Route, RouteComponentProps, Switch } from "react-router-dom";
 import Utils from "utils";
-import AddCampaignPage from "./AddCampaignPage";
 import AddCampaignSuccess from "./AddCampaignSuccess";
 import CampaignList from "./CampaignList";
-import EditCampaignPage from "./EditCampaignPage";
+import CampaignPage from "./CampaignPage";
 
 export enum send {
   NOW = 2,
@@ -70,10 +68,10 @@ const SmsCampaign = (props: RouteComponentProps) => {
         <CampaignList {...props} />
       </Route>
       <Route exact path={`${props.match.url}/edit`}>
-        <EditCampaignPage {...props} />
+        <CampaignPage {...props} />
       </Route>
       <Route exact path={`${props.match.url}/add`}>
-        <AddCampaignPage {...props} />
+        <CampaignPage {...props} />
       </Route>
       <Route exact path={`${props.match.url}/success`}>
         <AddCampaignSuccess {...props} />

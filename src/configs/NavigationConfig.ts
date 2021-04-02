@@ -32,8 +32,8 @@ const dashBoardNavTree = [
     submenu: [],
   },
   {
-    key: "tariffs",
-    path: "/app/tariffs",
+    key: "pricing-plans",
+    path: "/app/pricing-plans",
     title: "sidenav.tariffs",
     icon: DollarOutlined,
     breadcrumb: true,

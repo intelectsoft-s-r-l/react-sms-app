@@ -36,7 +36,7 @@
 
   "sidenav.dashboard": "Dashboard",
   "sidenav.campaign": "Campaign",
-  "sidenav.tariffs": "Tariffs",
+  "sidenav.tariffs": "Pricing plans",
   "sidenav.settings": "Settings",
 
   "header.logout.message": "Are you sure you want to log out?",
@@ -133,5 +133,21 @@
   "save": "Save",
   "scheduled": "Scheduled",
   "executing": "In process",
-  "sms.example": "Hello, this is an SMS example! :)"
+  "sms.example": "Hello, this is an SMS example! :)",
+  "latest": "Latest SMS Transactions",
+  "list": "List of transactions",
+  "today": "Today",
+  "week": "Week",
+  "month": "Month",
+  "phone": "Phone",
+  "sent.date": "Send date",
+  "message.type": "Message type",
+  "state": "State",
+  "quantity": "Quantity",
+  "download": "Download",
+  "sent": "Sent",
+  "failed": "Failed",
+  "rejected": "Rejected",
+  "waiting": "Waiting",
+  "pricing": "Pricing"
 }

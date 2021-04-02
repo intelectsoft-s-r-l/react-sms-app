@@ -3,7 +3,7 @@ import { Button, Input, Table } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Flex from "components/shared-components/Flex";
-import SmsTable from "./SmsCampaignTable";
+import SmsCampaignColumns from "./SmsCampaignColumns";
 import { Link, RouteComponentProps } from "react-router-dom";
 import TranslateText from "utils/translate";
 import Utils from "utils";
@@ -65,7 +65,7 @@ const CampaignList = ({ match }: RouteComponentProps) => {
       </Flex>
       <Table
         loading={tableLoading}
-        columns={SmsTable(getCampaignList, match)}
+        columns={SmsCampaignColumns(getCampaignList, match)}
         dataSource={campaignInfo}
         rowKey={"ID"}
       />

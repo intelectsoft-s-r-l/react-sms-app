@@ -70,7 +70,6 @@ class HttpService {
 
   private setToken = (Token: string) => {
     this.token = Token;
-    // We verify by company_id because managetoken is a cookie and it's shared between tabs
     this.company_id
       ? Utils.setManageToken(`ManageToken_${this.company_id}`, Token)
       : Utils.setToken(Token);
@@ -85,10 +84,10 @@ class HttpService {
     };
   };
 
-  private _handleResponse = (response: AxiosResponse) => {
+  private _handleResponse = async (response: AxiosResponse) => {
     console.log(response);
     if (response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN) {
-      return this._RefreshToken().then(async (tokenData) => {
+      return await this._RefreshToken().then(async (tokenData) => {
         if (tokenData && tokenData.ErrorCode === 0) {
           const { Token } = tokenData;
           this.setToken(Token);
@@ -108,6 +107,7 @@ class HttpService {
           }
         } else {
           const key = "updatable";
+          debugger;
           message
             .loading({
               content: TranslateText(EXPIRE_TIME),

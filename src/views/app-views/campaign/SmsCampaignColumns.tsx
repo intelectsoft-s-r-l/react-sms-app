@@ -27,7 +27,7 @@ export enum EnCampaignStatus {
   ACTIVE = 1,
   DELETED = 2,
 }
-const SmsTable = (refreshList: () => void, match: any) => {
+const SmsCampaignColumns = (refreshList: () => void, match: any) => {
   const getDaysLeft = (date: string) => {
     const oneDay = 24 * 60 * 60 * 1000;
     const today = new Date();
@@ -132,4 +132,4 @@ const SmsTable = (refreshList: () => void, match: any) => {
 
   return tableColumns;
 };
-export default SmsTable;
+export default SmsCampaignColumns;
