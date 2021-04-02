@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Input, Table } from "antd";
+import { Button, Input, Table, Modal } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import Flex from "components/shared-components/Flex";
@@ -9,6 +9,7 @@ import TranslateText from "utils/translate";
 import Utils from "utils";
 import { SmsService } from "api/sms";
 import { ICampaignList } from "api/sms/types";
+import { EnErrorCode } from "api";
 
 const CampaignList = ({ match }: RouteComponentProps) => {
   const instance = new SmsService();
@@ -28,6 +29,27 @@ const CampaignList = ({ match }: RouteComponentProps) => {
         setCampaignInfo(data.CampaignList);
         return Promise;
       }
+    });
+  };
+  const deleteCampaign = async (id: number) => {
+    setTableLoading(true);
+    return await instance.SMS_DeleteCampaign(id).then((data) => {
+      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+        getCampaignList();
+      }
+    });
+  };
+
+  const cancelCampaign = async (id: number) => {
+    Modal.confirm({
+      title: "Are you sure you want to cancel this campaign?",
+      onOk: async () => {
+        return await instance.SMS_Campaign_SetAsDraft(id).then(async (data) => {
+          if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+            await getCampaignList();
+          }
+        });
+      },
     });
   };
 
@@ -65,7 +87,7 @@ const CampaignList = ({ match }: RouteComponentProps) => {
       </Flex>
       <Table
         loading={tableLoading}
-        columns={SmsCampaignColumns(getCampaignList, match)}
+        columns={SmsCampaignColumns(match, deleteCampaign, cancelCampaign)}
         dataSource={campaignInfo}
         rowKey={"ID"}
       />

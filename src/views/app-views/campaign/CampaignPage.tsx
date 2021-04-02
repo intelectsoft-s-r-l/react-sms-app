@@ -17,12 +17,7 @@ import { ROW_GUTTER } from "constants/ThemeConstant";
 import CampaignForm from "./CampaignForm";
 import Phone from "components/util-components/Phone";
 import Utils from "utils";
-import {
-  DATE_FORMAT_dd_MMM_YYYY,
-  DATE_FORMAT_DD_MM_YYYY,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm,
-  DATE_FORMAT_DD_MM_YYYY_HH_mm_ss,
-} from "constants/DateConstant";
+import { DATE_FORMAT_DD_MM_YYYY } from "constants/DateConstant";
 import Loading from "components/shared-components/Loading";
 
 function CampaignPage(props: RouteComponentProps) {
@@ -60,7 +55,8 @@ function CampaignPage(props: RouteComponentProps) {
       .SMS_UpdateCampaign({
         ...values,
         ID: query.get("id") ?? values.ID,
-        ScheduledDate: date,
+        ScheduledDate: Utils.handleDotNetDate(values.ScheduledDate),
+        Status: radioVal,
       })
       .then((data) => {
         setLoading(false);
