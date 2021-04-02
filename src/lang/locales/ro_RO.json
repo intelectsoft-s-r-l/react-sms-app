@@ -150,5 +150,7 @@
   "failed": "Eșuate",
   "rejected": "Respinse",
   "waiting": "În așteptare",
-  "pricing": "Preț"
+  "pricing": "Preț",
+  "edit": "Editează",
+  "cancel": "Anulează"
 }

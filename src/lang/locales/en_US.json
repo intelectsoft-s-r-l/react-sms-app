@@ -149,5 +149,7 @@
   "failed": "Failed",
   "rejected": "Rejected",
   "waiting": "Waiting",
-  "pricing": "Pricing"
+  "pricing": "Pricing",
+  "edit": "Edit",
+  "cancel": "Cancel"
 }
