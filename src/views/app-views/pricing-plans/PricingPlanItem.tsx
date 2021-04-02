@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Tag, Tooltip } from "antd";
+import { Card, Popover, Tag, Tooltip } from "antd";
 import { IAppPackages } from "api/client/types";
 import Flex from "components/shared-components/Flex";
 
@@ -11,13 +11,18 @@ function PricingPlanItem({ pricingPlan }: PricingPlanItemType) {
     <Card>
       <Flex justifyContent="between">
         <h4>{pricingPlan.Name}</h4>
-        <Tooltip
-          title={`From ${pricingPlan.MinValue} to ${pricingPlan.MaxValue}`}
+        <Popover
+          content={
+            <div>
+              From <b>{pricingPlan.MinValue}</b> transactions to{" "}
+              <b>{pricingPlan.MaxValue}</b> transactions
+            </div>
+          }
         >
           <Tag className="cursor-pointer">
-            <h5>{pricingPlan.Price} MDL</h5>
+            <h5 style={{ marginTop: "2px" }}>{pricingPlan.Price} MDL</h5>
           </Tag>
-        </Tooltip>
+        </Popover>
       </Flex>
     </Card>
   );
