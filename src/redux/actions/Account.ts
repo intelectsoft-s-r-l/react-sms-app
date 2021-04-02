@@ -22,7 +22,7 @@ export const clearSettings = () => ({
 });
 
 export const getProfileInfo = (): ThunkResult<void> => async (dispatch) => {
-  return new AuthService()
+  return await new AuthService()
     .GetProfileInfo()
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
