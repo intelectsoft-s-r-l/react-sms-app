@@ -77,4 +77,7 @@ export class SmsService extends HttpService {
     this.instance.post<ApiResponse>("/Campaign/Update", {
       ...campaignInfo,
     });
+
+  public SMS_Campaign_SetAsDraft = async (ID: number) =>
+    this.instance.get<ApiResponse>("/Campaign/SetAsDraft", { params: { ID } });
 }
