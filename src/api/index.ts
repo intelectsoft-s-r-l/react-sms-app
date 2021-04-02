@@ -20,6 +20,7 @@ export enum EnErrorCode {
   APIKEY_NOT_EXIST = 10,
   EXPIRED_TOKEN = 118,
   INCORECT_AUTH_DATA = 102,
+  INCORRECT_TOKEN = 105, // Bye-bye!
 }
 export enum EnReqStatus {
   OK = 200,
@@ -105,19 +106,24 @@ class HttpService {
             };
             return await this.instance.request(response.config);
           }
-        } else {
-          const key = "updatable";
-          debugger;
-          message
-            .loading({
-              content: TranslateText(EXPIRE_TIME),
-              key,
-              duration: 1.5,
-            })
-            .then(() => {
-              store.dispatch({ type: SIGNOUT });
-            });
         }
+      });
+    } else if (response.data.ErrorCode === EnErrorCode.INCORRECT_TOKEN) {
+      const key = "updatable";
+      message
+        .loading({
+          content: TranslateText(EXPIRE_TIME),
+          key,
+          duration: 1.5,
+        })
+        .then(() => {
+          store.dispatch({ type: SIGNOUT });
+        });
+    } else if (response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR) {
+      notification.error({
+        message: `Error`,
+        description: response.data.ErrorMessage,
+        duration: 20,
       });
     } else if (
       response.data.ErrorCode !== EnErrorCode.NO_ERROR &&
@@ -126,7 +132,7 @@ class HttpService {
       response.data.ErrorCode !== EnErrorCode.APIKEY_NOT_EXIST
     ) {
       message.error({
-        content: `Error: ${response.data.ErrorMessage}`,
+        content: `Internal Error: ${response.data.ErrorMessage}`,
         key: "updatable",
         duration: 2.5,
       });
