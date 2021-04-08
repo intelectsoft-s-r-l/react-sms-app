@@ -49,6 +49,7 @@ export const authorizeUser = (
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
         Utils.setToken(data.Token);
+        dispatch(getProfileInfo());
         return data;
       } else {
         dispatch(showAuthMessage(data.ErrorMessage.toString()));
