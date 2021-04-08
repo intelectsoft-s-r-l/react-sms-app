@@ -1,29 +1,20 @@
-import React, { SetStateAction, Dispatch, useEffect } from "react";
+import * as React from "react";
+import { SetStateAction, Dispatch } from "react";
+import { UploadOutlined } from "@ant-design/icons";
 import Upload, { UploadChangeParam } from "antd/lib/upload";
 import Utils from "utils";
-import TranslateText from "utils/translate";
-import { Alert, Button, Tooltip } from "antd";
-import Flex from "components/shared-components/Flex";
-import { motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import { IState } from "redux/reducers";
-import { hideAuthMessage } from "redux/actions/Auth";
+import { Button } from "antd";
 
 interface IAttachNumbers {
   setPhoneNumbers: Dispatch<SetStateAction<any[]>>;
   isCsvOrTxt: boolean;
   setIsCsvOrTxt: Dispatch<SetStateAction<boolean>>;
-  phoneNumbers: any[];
 }
 const AttachNumbers = ({
   setPhoneNumbers,
   isCsvOrTxt,
   setIsCsvOrTxt,
-  phoneNumbers,
 }: IAttachNumbers) => {
-  const showMessage = useSelector((state: IState) => state.auth?.showMessage);
-  const storeMsg = useSelector((state: IState) => state.auth?.message);
-  const dispatch = useDispatch();
   const onChange = (info: UploadChangeParam<any>) => {
     if (info.file.status === "done") {
       const reader = new FileReader();
@@ -40,57 +31,27 @@ const AttachNumbers = ({
       reader.readAsText(info.file.originFileObj);
     }
   };
-  useEffect(() => {
-    if (showMessage) {
-      setTimeout(() => {
-        dispatch(hideAuthMessage());
-      }, 3000);
-    }
-  }, [showMessage]);
   return (
     <div className="mb-3">
-      <Flex className="w-100" justifyContent="between" alignItems="center">
-        <div style={{ fontWeight: 500, color: "#455560" }}>
-          {TranslateText("SMS.Receivers")}
-        </div>
-        <Button type="ghost">View</Button>
-      </Flex>
-      <motion.div
-        initial={{ opacity: 0, marginBottom: 0, display: "none" }}
-        animate={{
-          display: showMessage ? "block" : "none",
-          opacity: showMessage ? 1 : 0,
-          marginBottom: showMessage ? 20 : 0,
+      <Upload
+        // @ts-ignore
+        beforeUpload={async (file: RcFile) => {
+          return await Utils.beforeUploadNumbers(file).then((canUpload) => {
+            if (canUpload) setIsCsvOrTxt(true);
+
+            return canUpload;
+          });
+        }}
+        onChange={onChange}
+        multiple={true}
+        customRequest={Utils.dummyRequest}
+        showUploadList={{
+          showRemoveIcon: false,
+          showPreviewIcon: isCsvOrTxt,
         }}
       >
-        <Alert type="error" showIcon message={storeMsg} />
-      </motion.div>
-      <small>
-        {/* {TranslateText("SMS.NoContacts")}.{" "} */}
-        <Upload
-          // @ts-ignore
-          beforeUpload={async (file: RcFile) => {
-            return await Utils.beforeUploadNumbers(file).then((canUpload) => {
-              if (canUpload) setIsCsvOrTxt(true);
-
-              return canUpload;
-            });
-          }}
-          onChange={onChange}
-          multiple={true}
-          customRequest={Utils.dummyRequest}
-          showUploadList={{
-            showRemoveIcon: false,
-            showPreviewIcon: isCsvOrTxt,
-          }}
-        >
-          <Tooltip title="Only .csv or .txt format accepted">
-            <small>
-              <a>{TranslateText("SMS.AttachFile")}</a>
-            </small>
-          </Tooltip>
-        </Upload>
-      </small>
+        <Button icon={<UploadOutlined />}>Choose file</Button>
+      </Upload>
     </div>
   );
 };
