@@ -1,6 +1,6 @@
+import * as React from "react";
 import { Card, Col, Row, Spin } from "antd";
 import { SMS_ID } from "constants/ApiConstant";
-import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteApiKey, generateApiKey } from "redux/actions/App";
 import { IState } from "redux/reducers";

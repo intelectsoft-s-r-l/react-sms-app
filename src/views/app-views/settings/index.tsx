@@ -1,5 +1,5 @@
-import { Spin } from "antd";
 import * as React from "react";
+import { Spin } from "antd";
 import { useSelector } from "react-redux";
 import { IState } from "redux/reducers";
 import SettingsForm from "./SettingsForm";

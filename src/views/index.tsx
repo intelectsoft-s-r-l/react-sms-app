@@ -64,7 +64,6 @@ export const Views = (props: IViews) => {
           </Route>
           <RouteInterceptor
             path={APP_PREFIX_PATH}
-            // company_id has to be cleared everytime we authorize
             isAuthenticated={new HttpService().token}
             component={AppLayout}
           />

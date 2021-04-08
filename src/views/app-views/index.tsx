@@ -7,15 +7,16 @@ import { APP_PREFIX_PATH } from "configs/AppConfig";
 import { getProfileInfo } from "redux/actions/Account";
 
 export const AppViews = ({ getProfileInfo }: any) => {
-  useEffect(() => {
-    getProfileInfo();
-  }, []);
   return (
     <Suspense fallback={<Loading cover="content" />}>
       <Switch>
         <Route
           path={`${APP_PREFIX_PATH}/dashboard`}
           component={lazy(() => import(`./dashboard`))}
+        />
+        <Route
+          path={`${APP_PREFIX_PATH}/address-books`}
+          component={lazy(() => import(`./address-books`))}
         />
         <Route
           path={`${APP_PREFIX_PATH}/campaign`}
