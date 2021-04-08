@@ -9,6 +9,7 @@ type SettingsControllerProps = {
   isDisabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   name: string;
+  buttonText?: string;
   copyText?: boolean;
   value: string | number | undefined;
   inputType?: LiteralUnion<
@@ -54,6 +55,7 @@ function SettingsController(props: SettingsControllerProps) {
     onDelete,
     onSubmit,
     readOnly = false,
+    buttonText = "Generate",
   } = props;
   return (
     <>
@@ -76,7 +78,7 @@ function SettingsController(props: SettingsControllerProps) {
       />
       <div className="mt-3">
         <Button type={buttonType} onClick={onSubmit}>
-          Submit
+          {buttonText}
         </Button>
         {onDelete && (
           <Button danger onClick={onDelete} className="ml-3">
