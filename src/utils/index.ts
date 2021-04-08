@@ -184,12 +184,10 @@ class Utils {
           return false;
         };
         if (hasLetters()) {
-          store.dispatch(
-            showAuthMessage("The file should not contain letters!")
-          );
+          message.error("The file should not contain letters!");
         }
         if (!isCsvOrTxt) {
-          store.dispatch(showAuthMessage("You can only upload CSV/TXT file!"));
+          message.error("You can only upload CSV/TXT file!");
         }
         if (!hasLetters() && isCsvOrTxt) {
           resolve(true);
