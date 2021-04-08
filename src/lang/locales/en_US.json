@@ -35,6 +35,7 @@
   "auth.GoToLogin": "Go to login",
 
   "sidenav.dashboard": "Dashboard",
+  "sidenav.address-books": "Address books",
   "sidenav.campaign": "Campaign",
   "sidenav.tariffs": "Pricing plans",
   "sidenav.settings": "Settings",
@@ -129,7 +130,7 @@
   "send.sms": "Send SMS",
   "immediately": "Immediately",
   "delay.sms.send": "Delay SMS send",
-  "draft": "Draft",
+  "draft": "Save as Draft",
   "save": "Save",
   "scheduled": "Scheduled",
   "executing": "In process",

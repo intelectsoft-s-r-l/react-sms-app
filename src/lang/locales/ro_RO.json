@@ -36,6 +36,7 @@
   "auth.GoToLogin": "La logare",
 
   "sidenav.dashboard": "Dashboard",
+  "sidenav.address-books": "Cărți de adrese",
   "sidenav.campaign": "Campanie",
   "sidenav.tariffs": "Tarife",
   "sidenav.settings": "Setări",
@@ -130,7 +131,7 @@
   "send.sms": "Trimite SMS",
   "immediately": "Imediat",
   "delay.sms.send": "Planifică trimiterea",
-  "draft": "Draft",
+  "draft": "Salvează ca draft",
   "save": "Salvează",
   "scheduled": "Planificată",
   "executing": "În proces",

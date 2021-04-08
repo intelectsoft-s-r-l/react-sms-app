@@ -39,6 +39,7 @@
   "auth.GoToLogin": "Перейти к логину",
 
   "sidenav.dashboard": "Панель",
+  "sidenav.address-books": "Адрессные книги",
   "sidenav.campaign": "Рассылка",
   "sidenav.tariffs": "Тарифы",
   "sidenav.settings": "Настройки",
@@ -134,7 +135,7 @@
   "send.sms": "Отправить СМС",
   "immediately": "Немедленно",
   "delay.sms.send": "Планировать отправку",
-  "draft": "Черновик",
+  "draft": "Сохранить в Черновик",
   "save": "Сохранить",
   "scheduled": "Запланированная",
   "executing": "В процессе",
