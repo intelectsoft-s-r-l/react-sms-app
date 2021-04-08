@@ -4,6 +4,7 @@ import { env } from "./EnvironmentConfig";
 export const APP_NAME = "My SMS App";
 export const PORTAL_URL = env!.PORTAL_URL;
 export const DOMAIN = env!.DOMAIN;
+export const API_MAIL_URL = env!.API_MAIL_URL;
 export const API_PORTAL_URL = env!.API_PORTAL_URL;
 export const API_AUTH_URL = env!.API_AUTH_URL;
 export const API_SMS_URL = env!.API_SMS_URL;
