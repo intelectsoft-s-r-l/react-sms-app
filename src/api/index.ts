@@ -64,11 +64,6 @@ class HttpService {
     );
   };
 
-  private _RefreshToken = async () =>
-    this.instance.get<ApiDecorator<ApiResponse, "Token", string>>(
-      `${API_AUTH_URL}/RefreshToken`
-    );
-
   private setToken = (Token: string) => {
     this.token = Token;
     this.company_id
@@ -88,36 +83,38 @@ class HttpService {
   private _handleResponse = async (response: AxiosResponse) => {
     console.log(response);
     if (response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN) {
-      return await this._RefreshToken().then(async (tokenData) => {
-        if (tokenData && tokenData.ErrorCode === 0) {
-          const { Token } = tokenData;
-          this.setToken(Token);
-          if (response.config.method === "get") {
-            response.config.params = {
-              ...response.config.params,
-              Token,
-            };
-            return await this.instance.request(response.config);
+      return await axios
+        .get(`${API_AUTH_URL}/RefreshToken`, { params: { Token: this.token } })
+        .then(async ({ data }) => {
+          if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+            const { Token } = data;
+            this.setToken(Token);
+            if (response.config.method === "get") {
+              response.config.params = {
+                ...response.config.params,
+                Token,
+              };
+              return await this.instance.request(response.config);
+            }
+            if (response.config.method === "post") {
+              response.config.data = {
+                ...JSON.parse(response.config.data),
+                Token,
+              };
+              return await this.instance.request(response.config);
+            }
+          } else {
+            const key = "updatable";
+            message
+              .loading({
+                content: TranslateText(EXPIRE_TIME),
+                key,
+                duration: 1.5,
+              })
+              .then(() => {
+                store.dispatch({ type: SIGNOUT });
+              });
           }
-          if (response.config.method === "post") {
-            response.config.data = {
-              ...JSON.parse(response.config.data),
-              Token,
-            };
-            return await this.instance.request(response.config);
-          }
-        }
-      });
-    } else if (response.data.ErrorCode === EnErrorCode.INCORRECT_TOKEN) {
-      const key = "updatable";
-      message
-        .loading({
-          content: TranslateText(EXPIRE_TIME),
-          key,
-          duration: 1.5,
-        })
-        .then(() => {
-          store.dispatch({ type: SIGNOUT });
         });
     } else if (response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR) {
       notification.error({
