@@ -1,7 +1,11 @@
 import { ApiResponse } from "api/types";
 import { API_MAIL_URL } from "configs/AppConfig";
 import HttpService from "../";
-import { ContactList, ContactListResponse } from "./types";
+import {
+  ContactList,
+  ContactListResponse,
+  ContactListsResponse,
+} from "./types";
 
 export class MailService extends HttpService {
   constructor() {
@@ -14,13 +18,13 @@ export class MailService extends HttpService {
     });
   }
   public GetContactLists = async () =>
-    this.instance.get<ContactListResponse<ContactList[]>>(`/GetContactLists`);
+    this.instance.get<ContactListsResponse>(`/GetContactLists`);
 
   public GetContactList = async (ID: number) =>
-    this.instance.get<ContactListResponse<ContactList>>(`/GetContactList`, {
+    this.instance.get<ContactListResponse>(`/GetContactList`, {
       params: { ID }, // FIXME: This might cause the spread incorrect operator bug
     });
 
   public UpdateContactList = async (data: ContactList) =>
-    this.instance.post<ApiResponse>(`/UpdateTemplate`, data);
+    this.instance.post<ApiResponse>(`/UpdateContactList`, data);
 }

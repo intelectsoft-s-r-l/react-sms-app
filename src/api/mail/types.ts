@@ -9,8 +9,13 @@ export type ContactList = {
   ContactsData?: string;
 };
 
-export type ContactListResponse<T> = ApiDecorator<
+export type ContactListsResponse = ApiDecorator<
+  ApiResponse,
+  "ContactsLists",
+  ContactList[]
+>;
+export type ContactListResponse = ApiDecorator<
   ApiResponse,
   "ContactsList",
-  T
+  ContactList
 >;
