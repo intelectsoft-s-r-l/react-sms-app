@@ -6,6 +6,10 @@ import { Link, Route, RouteComponentProps } from "react-router-dom";
 import InsertManually from "./InsertManually";
 import UploadFile from "./UploadFile";
 import ImportFrom from "./ImportFrom";
+import { ContactList, ContactListResponse } from "api/mail/types";
+import Loading from "components/shared-components/Loading";
+import { MailService } from "api/mail";
+import { EnErrorCode } from "api";
 
 /*
  * This component will need 3 separate tabs
@@ -36,13 +40,17 @@ const uploadTabs = (props: RouteComponentProps) => [
 const Upload = (props: RouteComponentProps) => {
   const query = useQuery();
   const [addressBook, setAddressBook] = useState<any | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    setAddressBook(
-      JSON.parse(localStorage.getItem("address-books") ?? "[]").find(
-        (elem: any) => elem.id == query.get("id")
-      )
-    );
+    new MailService().GetContactList(+query.get("id")!).then((data) => {
+      setLoading(false);
+      if (data && data.ErrorCode === EnErrorCode.NO_ERROR)
+        setAddressBook(data.ContactsList);
+    });
   }, [query.get("id")]);
+  if (loading) {
+    return <Loading />;
+  }
   if (!addressBook) {
     return (
       <Result
@@ -59,18 +67,18 @@ const Upload = (props: RouteComponentProps) => {
           <div style={{ fontWeight: 400 }}>
             <span style={{ fontSize: 30 }}>Add contacts:</span>{" "}
             <Link
-              to={props.match.url + `/item?id=${addressBook.id}`}
+              to={props.match.url + `/item?id=${addressBook.ID}`}
               style={{ fontSize: 30 }}
             >
               {addressBook.Name}
             </Link>{" "}
-            ({addressBook.Contacts.length} contacts)
+            ({addressBook.Phone} contacts)
           </div>
         }
         onBack={() => props.history.push(props.match.url)}
       />
 
-      <Tabs defaultActiveKey="1">
+      <Tabs defaultActiveKey="1" type="card">
         {uploadTabs(props).map(({ key, title, component: Component }) => (
           <Tabs.TabPane tab={title} key={key}>
             <Card style={{ maxWidth: "600px" }}>{Component}</Card>

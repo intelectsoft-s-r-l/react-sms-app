@@ -12,41 +12,35 @@ interface AddressBooksItemProps {
 }
 const handleDropdown = (element: any) => (
   <Menu>
-    <Menu.Item
-      onClick={() => {
-        deleteAddressBook(element.id);
-        window.location.reload();
-      }}
-    >
-      Delete
-    </Menu.Item>
+    <Menu.Item onClick={() => {}}>Delete</Menu.Item>
   </Menu>
 );
-const AddressBooksItem = ({ book, match }: any) => {
+const AddressBooksItem = (props: any) => {
+  const { Name, match, Phone, Email, ID } = props;
   return (
     <Card className="w-100">
       <div className="d-flex justify-content-between w-100">
         <div>
-          <p>{book.CreateDate}</p>
+          <p>12/12/2020 16:40</p>
           <h3>
-            <Link to={match.url + `/item?id=${book.id}`}>{book.Name}</Link>
+            <Link to={match.url + `/item?id=${ID}`}>{Name}</Link>
           </h3>
           <div>
-            {book.Contacts.length > 0 ? (
-              `Contacts: ${book.Contacts.length}`
+            {Phone > 0 ? (
+              `Contacts: ${Phone}`
             ) : (
               <div>
                 No contacts,{" "}
-                <Link to={match.url + `/upload?id=${book.id}`}>add</Link>
+                <Link to={match.url + `/upload?id=${ID}`}>add</Link>
               </div>
             )}
           </div>
         </div>
         <div className="text-center">
-          <EllipsisDropdown menu={handleDropdown(book)} isHorizontal />
-          <Link to={match.url + `/item?id=${book.id}`}>
+          <EllipsisDropdown menu={handleDropdown(props)} isHorizontal />
+          <Link to={match.url + `/item?id=${ID}`}>
             <div>
-              <a style={{ fontSize: 30 }}>{book.Contacts.length}</a>
+              <a style={{ fontSize: 30 }}>{Phone}</a>
               <br />
               <small>Phones</small>
             </div>

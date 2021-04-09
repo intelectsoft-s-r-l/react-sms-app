@@ -38,8 +38,9 @@ const AddressBooks = (props: RouteComponentProps) => {
 
   const getAddressBooks = async () => {
     return await new MailService().GetContactLists().then((data) => {
-      if (data && data.ErrorCode === EnErrorCode.NO_ERROR)
-        setAddressBooks(data.ContactsList);
+      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+        setAddressBooks(data.ContactsLists);
+      }
     });
   };
 
@@ -50,10 +51,8 @@ const AddressBooks = (props: RouteComponentProps) => {
       }
     });
   };
-
   useEffect(() => {
     getAddressBooks();
-    return new MailService()._source.cancel();
   }, []);
   return (
     <Switch>
@@ -71,15 +70,10 @@ const AddressBooks = (props: RouteComponentProps) => {
           <BookOutlined />
           New address book
         </Button>
-        {addressBooks ? (
-          addressBooks.map((book: any, idx: number) => (
-            <AddressBooksItem book={book} {...props} key={idx + 1} />
-          ))
-        ) : (
-          <Empty />
-        )}
+        {addressBooks.map((book, idx: number) => (
+          <AddressBooksItem {...book} {...props} key={idx + 1} />
+        ))}
       </Route>
-      {/* With params  query={query}*/}
       <Route path={props.match.url + "/upload"}>
         <Upload {...props} />
       </Route>

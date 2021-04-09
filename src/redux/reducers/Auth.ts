@@ -14,6 +14,7 @@ import {
   HIDE_LOADING,
   IS_USER_ACTIVATED,
   SET_TOKEN,
+  SET_IS_REFRESHING,
 } from "redux/constants/Auth";
 import Utils from "utils";
 
@@ -25,6 +26,7 @@ export interface IAuth {
   token?: string;
   isAuth?: boolean;
   userActivated?: boolean;
+  isRefreshing: boolean;
 }
 const initState = {
   loading: false,
@@ -34,6 +36,7 @@ const initState = {
   token: "",
   isAuth: false,
   userActivated: false,
+  isRefreshing: false,
 };
 const auth = (state = initState, action: any) => {
   switch (action.type) {
@@ -63,7 +66,7 @@ const auth = (state = initState, action: any) => {
       if (new HttpService().company_id) Utils.removeManageToken();
       else Utils.removeToken();
       sessionStorage.clear();
-      window.location.reload();
+      debugger;
       return {
         ...state,
         token: null,
@@ -122,6 +125,11 @@ const auth = (state = initState, action: any) => {
       return {
         ...state,
         token: action.token,
+      };
+    case SET_IS_REFRESHING:
+      return {
+        ...state,
+        isRefreshing: action.payload,
       };
     default:
       return state;

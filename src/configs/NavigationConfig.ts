@@ -40,22 +40,22 @@ const dashBoardNavTree = [
     breadcrumb: true,
     submenu: [],
   },
-  //{
-  //key: "pricing-plans",
-  //path: "/app/pricing-plans",
-  //title: "sidenav.tariffs",
-  //icon: DollarOutlined,
-  //breadcrumb: true,
-  //submenu: [],
-  //},
-  //{
-  //key: "settings",
-  //path: "/app/settings",
-  //title: "sidenav.settings",
-  //icon: SettingOutlined,
-  //breadcrumb: true,
-  //submenu: [],
-  //},
+  {
+    key: "pricing-plans",
+    path: "/app/pricing-plans",
+    title: "sidenav.tariffs",
+    icon: DollarOutlined,
+    breadcrumb: true,
+    submenu: [],
+  },
+  {
+    key: "settings",
+    path: "/app/settings",
+    title: "sidenav.settings",
+    icon: SettingOutlined,
+    breadcrumb: true,
+    submenu: [],
+  },
 ];
 
 const navigationConfig = [...dashBoardNavTree];

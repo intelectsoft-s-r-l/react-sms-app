@@ -5,6 +5,7 @@ import {
   HIDE_AUTH_MESSAGE,
   SHOW_LOADING,
   HIDE_LOADING,
+  SET_IS_REFRESHING,
 } from "redux/constants/Auth";
 import { AuthService } from "api/auth";
 import { EnErrorCode } from "api";
@@ -18,6 +19,11 @@ import { DOMAIN } from "configs/AppConfig";
 export const authenticated = (token: string) => ({
   type: AUTHENTICATED,
   token,
+});
+
+export const setIsRefreshing = (isRefreshing: boolean) => ({
+  type: SET_IS_REFRESHING,
+  payload: isRefreshing,
 });
 
 export const signOut = () => ({

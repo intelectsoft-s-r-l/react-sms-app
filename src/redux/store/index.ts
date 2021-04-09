@@ -17,14 +17,14 @@ declare global {
   }
 }
 
-function configureStore(preLoadedState: any) {
+function configureStore(preLoadedState?: any) {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   return createStore(reducers, preLoadedState, compose(applyMiddleware(thunk)));
 }
 
-const store = configureStore(loadState());
+const store = configureStore();
 
-store.subscribe(throttle(() => saveState(store.getState()), 1000));
+//store.subscribe(throttle(() => saveState(store.getState()), 1000));
 
 export default store;

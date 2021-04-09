@@ -8,7 +8,12 @@ import axios, {
 import { API_AUTH_URL, DOMAIN } from "configs/AppConfig";
 import { EXPIRE_TIME } from "constants/Messages";
 import Cookies from "js-cookie";
-import { AUTHENTICATED, HIDE_LOADING, SIGNOUT } from "redux/constants/Auth";
+import {
+  AUTHENTICATED,
+  HIDE_LOADING,
+  SET_IS_REFRESHING,
+  SIGNOUT,
+} from "redux/constants/Auth";
 import store from "redux/store";
 import Utils from "utils";
 import TranslateText from "utils/translate";
@@ -53,6 +58,7 @@ class HttpService {
 
   private _initializeResponseInterceptor = () => {
     this.instance.interceptors.response.use(
+      // @ts-ignore
       this._handleResponse,
       this._handleError
     );
@@ -82,68 +88,63 @@ class HttpService {
 
   private _handleResponse = async (response: AxiosResponse) => {
     console.log(response);
-    if (response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN) {
-      return await axios
-        .get(`${API_AUTH_URL}/RefreshToken`, { params: { Token: this.token } })
-        .then(async ({ data }) => {
-          if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-            const { Token } = data;
-            this.setToken(Token);
-            if (response.config.method === "get") {
-              response.config.params = {
-                ...response.config.params,
-                Token,
-              };
-              return await this.instance.request(response.config);
-            }
-            if (response.config.method === "post") {
-              response.config.data = {
-                ...JSON.parse(response.config.data),
-                Token,
-              };
-              return await this.instance.request(response.config);
-            }
-          } else {
-            const key = "updatable";
-            message
-              .loading({
-                content: TranslateText(EXPIRE_TIME),
-                key,
-                duration: 1.5,
-              })
-              .then(() => {
-                store.dispatch({ type: SIGNOUT });
-              });
-          }
-        });
-    } else if (response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR) {
-      notification.error({
-        message: `Error`,
-        description: response.data.ErrorMessage,
-        duration: 20,
-      });
-    } else if (
-      response.data.ErrorCode !== EnErrorCode.NO_ERROR &&
-      response.data.ErrorCode !== EnErrorCode.EXPIRED_TOKEN &&
-      response.data.ErrorCode !== EnErrorCode.INCORECT_AUTH_DATA &&
-      response.data.ErrorCode !== EnErrorCode.APIKEY_NOT_EXIST
+    if (
+      response.data &&
+      response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN
     ) {
-      message.error({
-        content: `Internal Error: ${response.data.ErrorMessage}`,
-        key: "updatable",
-        duration: 2.5,
-      });
-    }
-    if (response.data.ErrorCode === EnErrorCode.APIKEY_NOT_EXIST) {
-      notification.warning({
-        message: `Warning: ${response.data.ErrorMessage}!`,
-        description: "Generate a new APIKey in settings menu!",
-        duration: 2.5,
-      });
+      return this._handleError(response);
     }
     return response.data;
   };
+
   private _handleError = async (error: AxiosResponse) => {
+    const redirectToLogin = () => {
+      const key = "updatable";
+      message
+        .loading({
+          content: TranslateText(EXPIRE_TIME),
+          key,
+          duration: 1.5,
+        })
+        .then(() => {
+          store.dispatch({ type: SIGNOUT });
+        });
+    };
+
+    const config = error.config;
+    if (!store.getState().auth.isRefreshing) {
+      return new Promise((resolve, reject) => {
+        store.dispatch({ type: SET_IS_REFRESHING, payload: true });
+        axios
+          .get(`${API_AUTH_URL}/RefreshToken`, {
+            params: { Token: this.token },
+          })
+          .then(({ data }) => {
+            console.log(`Refresh Token was called!`);
+            if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+              this.setToken(data.Token);
+              resolve(axios(config));
+            } else {
+              redirectToLogin();
+            }
+          })
+          .catch(() => {
+            redirectToLogin();
+          })
+          .finally(() => {
+            store.dispatch({ type: SET_IS_REFRESHING, payload: false });
+          });
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        const intervalId = setInterval(() => {
+          if (!store.getState().auth.isRefreshing) {
+            clearInterval(intervalId);
+            resolve(axios(config));
+          }
+        }, 100);
+      });
+    }
     store.dispatch({ type: HIDE_LOADING });
     if (error && error.request && error.request.status !== EnReqStatus.OK) {
       message.error({
