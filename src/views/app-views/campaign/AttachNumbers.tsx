@@ -43,14 +43,11 @@ const AttachNumbers = ({
           });
         }}
         onChange={onChange}
-        multiple={true}
+        multiple={false}
         customRequest={Utils.dummyRequest}
-        showUploadList={{
-          showRemoveIcon: false,
-          showPreviewIcon: isCsvOrTxt,
-        }}
+        showUploadList={false}
       >
-        <Button icon={<UploadOutlined />}>Choose file</Button>
+        <Button>Browse</Button>
       </Upload>
     </div>
   );

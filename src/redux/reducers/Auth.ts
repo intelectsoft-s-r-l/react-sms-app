@@ -66,7 +66,6 @@ const auth = (state = initState, action: any) => {
       if (new HttpService().company_id) Utils.removeManageToken();
       else Utils.removeToken();
       sessionStorage.clear();
-      debugger;
       return {
         ...state,
         token: null,

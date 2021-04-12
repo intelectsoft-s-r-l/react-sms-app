@@ -177,19 +177,10 @@ class Utils {
       reader.onload = (event: ProgressEvent<FileReader>) => {
         const isCsvOrTxt =
           file.type === "text/csv" || file.type === "text/plain";
-        const hasLetters = (): boolean => {
-          if (isCsvOrTxt) {
-            return /[a-z]/gi.test(event!.target!.result! as string);
-          }
-          return false;
-        };
-        if (hasLetters()) {
-          message.error("The file should not contain letters!");
-        }
         if (!isCsvOrTxt) {
           message.error("You can only upload CSV/TXT file!");
         }
-        if (!hasLetters() && isCsvOrTxt) {
+        if (isCsvOrTxt) {
           resolve(true);
         } else {
           reject();

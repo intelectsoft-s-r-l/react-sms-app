@@ -116,11 +116,13 @@ class HttpService {
     if (!store.getState().auth.isRefreshing) {
       return new Promise((resolve, reject) => {
         store.dispatch({ type: SET_IS_REFRESHING, payload: true });
+        console.log(store.getState().auth.isRefreshing);
         axios
           .get(`${API_AUTH_URL}/RefreshToken`, {
             params: { Token: this.token },
           })
           .then(({ data }) => {
+            console.log(`Refresh token was called`, data);
             if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
               this.setToken(data.Token);
               resolve(this.instance(config));
@@ -140,7 +142,7 @@ class HttpService {
         const intervalId = setInterval(() => {
           if (!store.getState().auth.isRefreshing) {
             clearInterval(intervalId);
-            resolve(axios(config));
+            resolve(this.instance(config));
           }
         }, 100);
       });

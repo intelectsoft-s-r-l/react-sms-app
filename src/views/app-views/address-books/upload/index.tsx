@@ -41,12 +41,17 @@ const Upload = (props: RouteComponentProps) => {
   const query = useQuery();
   const [addressBook, setAddressBook] = useState<any | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const getContactList = async () => {
+    return await new MailService()
+      .GetContactList(+query.get("id")!)
+      .then((data) => {
+        setLoading(false);
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR)
+          setAddressBook(data.ContactsList);
+      });
+  };
   useEffect(() => {
-    new MailService().GetContactList(+query.get("id")!).then((data) => {
-      setLoading(false);
-      if (data && data.ErrorCode === EnErrorCode.NO_ERROR)
-        setAddressBook(data.ContactsList);
-    });
+    getContactList();
   }, [query.get("id")]);
   if (loading) {
     return <Loading />;
@@ -75,13 +80,12 @@ const Upload = (props: RouteComponentProps) => {
             ({addressBook.Phone} contacts)
           </div>
         }
-        onBack={() => props.history.push(props.match.url)}
       />
 
-      <Tabs defaultActiveKey="1" type="card">
+      <Tabs defaultActiveKey="2" type="card">
         {uploadTabs(props).map(({ key, title, component: Component }) => (
           <Tabs.TabPane tab={title} key={key}>
-            <Card style={{ maxWidth: "600px" }}>{Component}</Card>
+            {Component}
           </Tabs.TabPane>
         ))}
       </Tabs>
