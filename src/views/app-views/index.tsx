@@ -7,6 +7,9 @@ import { APP_PREFIX_PATH } from "configs/AppConfig";
 import { getProfileInfo } from "redux/actions/Account";
 
 export const AppViews = ({ getProfileInfo }: any) => {
+  useEffect(() => {
+    getProfileInfo();
+  }, []);
   return (
     <Suspense fallback={<Loading cover="content" />}>
       <Switch>
