@@ -14,7 +14,7 @@ import { AuthorizeUser } from "api/auth/types";
 import { getProfileInfo } from "./Account";
 import Utils from "utils";
 import Cookies from "js-cookie";
-import { DOMAIN } from "configs/AppConfig";
+import { APP_PREFIX_PATH, DOMAIN } from "configs/AppConfig";
 
 export const authenticated = (token: string) => ({
   type: AUTHENTICATED,
@@ -55,14 +55,12 @@ export const authorizeUser = (
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
         Utils.setToken(data.Token);
-        return data;
+        window.history.pushState(null, "", APP_PREFIX_PATH);
+        window.location.reload();
       } else {
         dispatch(showAuthMessage(data.ErrorMessage.toString()));
       }
-      return data;
     })
-    .then((data) => {
-      dispatch(hideLoading());
-      return data;
-    });
+    .catch(() => dispatch(hideLoading()))
+    .finally(() => dispatch(hideLoading()));
 };

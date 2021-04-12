@@ -43,16 +43,10 @@ const LoginForm = ({
   const onLogin = ({ email, password }: OnLogin) => {
     showLoading();
     setTimeout(async () => {
-      hideLoading();
       const response = await authorizeUser(
         email,
         Utils.encryptInput(password, API_PUBLIC_KEY)
       );
-      if (response.ErrorCode === EnErrorCode.NO_ERROR) {
-        // We clear the session storage in order to reset the way tokens are handled
-        sessionStorage.clear();
-        history.push(APP_PREFIX_PATH);
-      }
     }, 1000);
   };
   const onGoogleLogin = () => {
@@ -62,6 +56,10 @@ const LoginForm = ({
   const onFacebookLogin = () => {
     showLoading();
   };
+
+  useEffect(() => {
+    hideLoading();
+  }, []);
 
   useEffect(() => {
     if (showMessage) {
