@@ -23,8 +23,8 @@ function configureStore(preLoadedState?: any) {
   return createStore(reducers, preLoadedState, compose(applyMiddleware(thunk)));
 }
 
-const store = configureStore();
+const store = configureStore(loadState());
 
-//store.subscribe(throttle(() => saveState(store.getState()), 1000));
+store.subscribe(throttle(() => saveState(store.getState().theme), 1000));
 
 export default store;
