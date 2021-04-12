@@ -36,25 +36,16 @@ export class SmsService extends HttpService {
       },
     });
 
-  public Info_GetDetailByPeriod = async (
-    APIKey: string,
-    DateStart: string,
-    DateEnd: string
-  ) =>
+  public Info_GetDetailByPeriod = async (DateStart: string, DateEnd: string) =>
     this.instance.get<ISmsDetailPeriod>("/Info/GetDetailByPeriod", {
       params: {
-        APIKey,
         DateStart,
         DateEnd,
       },
     });
 
-  public Info_GetTotal = async (APIKey: string) =>
-    this.instance.get<ISmsInfo>("info/GetTotal", {
-      params: {
-        APIKey,
-      },
-    });
+  public Info_GetTotal = async () =>
+    this.instance.get<ISmsInfo>("info/GetTotal");
 
   public SMS_GetCampaign = async () =>
     this.instance.get<
