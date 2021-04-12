@@ -92,12 +92,13 @@ class HttpService {
       response.data &&
       response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN
     ) {
-      return this._handleError(response);
+      return this._handleExpireToken(response);
     }
+
     return response.data;
   };
 
-  private _handleError = async (error: AxiosResponse) => {
+  private _handleExpireToken = async (error: AxiosResponse) => {
     const redirectToLogin = () => {
       const key = "updatable";
       message
@@ -120,10 +121,9 @@ class HttpService {
             params: { Token: this.token },
           })
           .then(({ data }) => {
-            console.log(`Refresh Token was called!`);
             if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
               this.setToken(data.Token);
-              resolve(axios(config));
+              resolve(this.instance(config));
             } else {
               redirectToLogin();
             }
@@ -145,6 +145,9 @@ class HttpService {
         }, 100);
       });
     }
+  };
+
+  private _handleError = async (error: AxiosResponse) => {
     store.dispatch({ type: HIDE_LOADING });
     if (error && error.request && error.request.status !== EnReqStatus.OK) {
       message.error({
