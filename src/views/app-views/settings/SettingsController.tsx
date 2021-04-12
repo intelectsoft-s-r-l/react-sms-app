@@ -1,8 +1,8 @@
+import * as React from "react";
 import { Input } from "antd";
 import Button, { ButtonType } from "antd/lib/button";
 import { LiteralUnion } from "antd/lib/_util/type";
 import CardToolbar from "components/util-components/DemoCard/CardToolbar";
-import * as React from "react";
 
 type SettingsControllerProps = {
   title: React.ReactNode | string;

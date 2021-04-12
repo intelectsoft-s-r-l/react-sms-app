@@ -1,14 +1,16 @@
 import * as React from "react";
-import { Card, Col, Row, Spin } from "antd";
+import { Card, Col, Row } from "antd";
 import { SMS_ID } from "constants/ApiConstant";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteApiKey, generateApiKey } from "redux/actions/App";
-import { IState } from "redux/reducers";
+import { useDispatch } from "react-redux";
 import SettingsController from "./SettingsController";
 
-function SettingsForm() {
+interface ISettingsForm {
+  APIKey: string;
+  generateApiKey: (id: number) => void;
+  deleteApiKey: (id: number) => void;
+}
+function SettingsForm({ APIKey, generateApiKey, deleteApiKey }: ISettingsForm) {
   const dispatch = useDispatch();
-  const APIKey = useSelector((state: IState) => state.app.ApyKey);
   return (
     <Row>
       <Col xs={24} xl={12} xxl={8} md={24}>

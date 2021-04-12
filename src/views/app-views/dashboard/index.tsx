@@ -29,7 +29,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { IState } from "redux/reducers";
 import { PortalService } from "api/client";
 import { EnErrorCode } from "api";
-import { getAppInfo } from "redux/actions/App";
 
 enum EnSmsType {
   INFO = 0,
@@ -91,7 +90,6 @@ const tableColumns: ColumnsType<ISmsList> = [
 ];
 const SmsDashboard = () => {
   const instance = new SmsService();
-  const APIKey = useSelector((state: IState) => state.app.ApyKey) ?? "";
 
   const [date, setDate] = useState<any>([
     moment().clone().startOf("month"),
@@ -126,7 +124,7 @@ const SmsDashboard = () => {
     secondDate = date[1].format("DD-MM-YYYY")
   ) => {
     return await instance
-      .Info_GetDetailByPeriod(APIKey, firstDate, secondDate)
+      .Info_GetDetailByPeriod(firstDate, secondDate)
       .then((data) => {
         setLoading(false);
         if (data && data.ErrorCode === 0) {
@@ -153,7 +151,7 @@ const SmsDashboard = () => {
       });
   };
   const getSmsInfo = async () => {
-    return instance.Info_GetTotal(APIKey).then(async (data) => {
+    return instance.Info_GetTotal().then(async (data) => {
       if (data && data.ErrorCode === 0) {
         await getSmsList();
         setStatusData([

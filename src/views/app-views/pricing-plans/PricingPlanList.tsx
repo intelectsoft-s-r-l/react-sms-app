@@ -1,11 +1,9 @@
 import * as React from "react";
 import { Col, Empty } from "antd";
-import { useSelector } from "react-redux";
-import { IState } from "redux/reducers";
 import PricingPlanItem from "./PricingPlanItem";
+import { IAppPackages } from "api/client/types";
 
-function PricingPlanList() {
-  const pricingPlans = useSelector((state: IState) => state.app.Packages);
+function PricingPlanList({ pricingPlans }: { pricingPlans: IAppPackages[] }) {
   if (pricingPlans.length === 0) {
     return <Empty />;
   }
