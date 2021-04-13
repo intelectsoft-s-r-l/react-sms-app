@@ -1,11 +1,22 @@
 import * as React from "react";
 import { useState } from "react";
-import { Form, Button, Divider, Row, Col, Card, Upload, Grid } from "antd";
+import {
+  Form,
+  Button,
+  Divider,
+  Row,
+  Col,
+  Card,
+  Upload,
+  Grid,
+  message,
+} from "antd";
 import { useQuery } from "utils/hooks/useQuery";
 import { addContactNumbers } from "..";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Utils from "utils";
 import { UploadChangeParam } from "antd/lib/upload";
+import ContactResult from "./ContactResult";
 
 const listData = [
   {
@@ -28,10 +39,18 @@ const UploadFile = () => {
   const query = useQuery();
   const [phoneNumbers, setPhoneNumbers] = useState<number[]>([]);
   const [isCorrectFormat, setIsCorrectFormat] = useState<boolean>(false);
-  const [contacts, setContacts] = useState<any[]>([]);
+  const [contacts, setContacts] = useState<Array<string[]>>([]);
+  const [hasUploaded, setHasUploaded] = useState<boolean>(false);
+  //const onFinish = () => {
+  //addContactNumbers(+query.get("id")!, phoneNumbers);
+  //window.location.reload();
+  //};
   const onFinish = () => {
-    addContactNumbers(+query.get("id")!, phoneNumbers);
-    window.location.reload();
+    if (!contacts) {
+      return;
+    }
+
+    setHasUploaded(true);
   };
 
   const jsonDataArray = (array: any) => {
@@ -40,7 +59,7 @@ const UploadFile = () => {
     for (let i = 1, length = array.length; i < length; i++) {
       let row = array[i].split(",");
       console.log(row);
-      let data: any = {};
+      let data: Array<Array<string>> = [];
       for (let x = 0; x < row.length; x++) {
         data[headers[x]] = row[x];
       }
@@ -54,24 +73,23 @@ const UploadFile = () => {
       const reader = new FileReader();
       reader.readAsText(info.file.originFileObj);
       reader.onload = (ev: ProgressEvent<FileReader>) => {
-        const csv = ev.target!.result as string;
-        const array = csv.split("\n");
-        let rowObj: any = {};
-        let keyObj: any = {};
-        for (let i = 0, length = array.length; i < length; i++) {
-          const col: any = array[i].split(",");
-          rowObj[`row${i + 1}`] = col;
-          for (let j = 0; j < col.length; j++) {}
-        }
-        console.log(rowObj, keyObj);
+        const data: Array<string[]> = Utils.CSVToArray(
+          ev.target!.result as string
+        );
+        setContacts(data);
+        message.success("Contacts imported!");
       };
     }
   };
   const isMobile = Utils.getBreakPoint(Grid.useBreakpoint()).includes("xl");
 
+  if (hasUploaded === false) {
+    return <ContactResult contacts={contacts} />;
+  }
+
   return (
     <Card className="w-75">
-      <Form onFinish={onFinish} layout="vertical" style={{ width: "100%" }}>
+      <Form layout="vertical" style={{ width: "100%" }} onFinish={onFinish}>
         <Row gutter={ROW_GUTTER}>
           <Col xl={14}>
             <Form.Item
@@ -90,7 +108,9 @@ const UploadFile = () => {
               </Upload>
             </Form.Item>
             <Form.Item className="text-right">
-              <Button type="primary">Upload</Button>
+              <Button type="primary" htmlType="submit">
+                Upload
+              </Button>
             </Form.Item>
           </Col>
           <Col xl={1}>

@@ -72,6 +72,7 @@ class HttpService {
 
   private setToken = (Token: string) => {
     this.token = Token;
+    Utils.setToken(Token);
     this.company_id
       ? Utils.setManageToken(`ManageToken_${this.company_id}`, Token)
       : Utils.setToken(Token);
