@@ -8,7 +8,9 @@ import { getProfileInfo } from "redux/actions/Account";
 
 export const AppViews = ({ getProfileInfo }: any) => {
   useEffect(() => {
-    getProfileInfo();
+    (async function dumb() {
+      await getProfileInfo();
+    })();
   }, []);
   return (
     <Suspense fallback={<Loading cover="content" />}>

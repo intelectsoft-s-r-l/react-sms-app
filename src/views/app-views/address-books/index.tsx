@@ -52,7 +52,9 @@ const AddressBooks = (props: RouteComponentProps) => {
     });
   };
   useEffect(() => {
-    if (props.location.pathname === "/app/address-books") getAddressBooks();
+    (async function dummyFunction() {
+      await getAddressBooks();
+    })();
   }, []);
   return (
     <Switch>

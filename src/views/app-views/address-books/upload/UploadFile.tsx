@@ -17,6 +17,7 @@ import { ROW_GUTTER } from "constants/ThemeConstant";
 import Utils from "utils";
 import { UploadChangeParam } from "antd/lib/upload";
 import ContactResult from "./ContactResult";
+import { UploadContext } from "./uploadContext";
 
 const listData = [
   {
@@ -36,36 +37,13 @@ const listData = [
 ];
 
 const UploadFile = () => {
-  const query = useQuery();
-  const [phoneNumbers, setPhoneNumbers] = useState<number[]>([]);
-  const [isCorrectFormat, setIsCorrectFormat] = useState<boolean>(false);
-  const [contacts, setContacts] = useState<Array<string[]>>([]);
-  const [hasUploaded, setHasUploaded] = useState<boolean>(false);
-  //const onFinish = () => {
-  //addContactNumbers(+query.get("id")!, phoneNumbers);
-  //window.location.reload();
-  //};
+  const { state, dispatch } = React.useContext(UploadContext);
   const onFinish = () => {
-    if (!contacts) {
+    if (!state.contacts) {
       return;
     }
-
-    setHasUploaded(true);
-  };
-
-  const jsonDataArray = (array: any) => {
-    let headers = array[0].split(",");
-    let jsonData = [];
-    for (let i = 1, length = array.length; i < length; i++) {
-      let row = array[i].split(",");
-      console.log(row);
-      let data: Array<Array<string>> = [];
-      for (let x = 0; x < row.length; x++) {
-        data[headers[x]] = row[x];
-      }
-      jsonData.push(data);
-    }
-    return jsonData;
+    // API CALL
+    dispatch({ type: "SET_HAS_UPLOADED" });
   };
 
   const onChange = (info: UploadChangeParam<any>) => {
@@ -76,16 +54,23 @@ const UploadFile = () => {
         const data: Array<string[]> = Utils.CSVToArray(
           ev.target!.result as string
         );
-        setContacts(data);
-        message.success("Contacts imported!");
+        data.forEach((contacts) => {
+          contacts.forEach((_, __, array) => {
+            if (array.length > 1) {
+              // If there is more than one contact per row,
+              // it's considered it has variables
+              dispatch({ type: "SET_CONTACTS_WITH_VAR", payload: data });
+            }
+            // No variables
+            // Each contact starts from new line
+            dispatch({ type: "SET_CONTACTS", payload: data });
+          });
+        });
+        message.success("Contacts imported");
       };
     }
   };
   const isMobile = Utils.getBreakPoint(Grid.useBreakpoint()).includes("xl");
-
-  if (hasUploaded === false) {
-    return <ContactResult contacts={contacts} />;
-  }
 
   return (
     <Card className="w-75">

@@ -10,6 +10,10 @@ import { ContactList, ContactListResponse } from "api/mail/types";
 import Loading from "components/shared-components/Loading";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
+import { UploadContext } from "./uploadContext";
+import { uploadReducer, uploadState } from "./uploadReducer";
+import ContactResult from "./ContactResult";
+import ContactTable from "./ContactTable";
 
 /*
  * This component will need 3 separate tabs
@@ -41,6 +45,7 @@ const Upload = (props: RouteComponentProps) => {
   const query = useQuery();
   const [addressBook, setAddressBook] = useState<any | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [state, dispatch] = React.useReducer(uploadReducer, uploadState);
   const getContactList = async () => {
     return await new MailService()
       .GetContactList(+query.get("id")!)
@@ -51,7 +56,9 @@ const Upload = (props: RouteComponentProps) => {
       });
   };
   useEffect(() => {
-    getContactList();
+    (async function dumb() {
+      await getContactList();
+    })();
   }, [query.get("id")]);
   if (loading) {
     return <Loading />;
@@ -65,8 +72,18 @@ const Upload = (props: RouteComponentProps) => {
       />
     );
   }
+  if (state.hasUploaded && !state.hasVariables) {
+    return <ContactResult />;
+    // Show result
+    // If the user has uploaded/inserted the numbers
+    // if there are no variables (numbers are from each line) show the result
+    // else show the contacts table where the user chooses which is which
+  }
+  if (state.hasUploaded && state.hasVariables) {
+    // Show table with contacts and variables
+  }
   return (
-    <>
+    <UploadContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={
           <div style={{ fontWeight: 400 }}>
@@ -81,15 +98,20 @@ const Upload = (props: RouteComponentProps) => {
           </div>
         }
       />
-
-      <Tabs defaultActiveKey="2" type="card">
-        {uploadTabs(props).map(({ key, title, component: Component }) => (
-          <Tabs.TabPane tab={title} key={key}>
-            {Component}
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
-    </>
+      {state.hasUploaded && !state.hasVariables ? (
+        <ContactResult />
+      ) : state.hasUploaded && state.hasVariables ? (
+        <ContactTable />
+      ) : (
+        <Tabs defaultActiveKey="2" type="card">
+          {uploadTabs(props).map(({ key, title, component: Component }) => (
+            <Tabs.TabPane tab={title} key={key}>
+              {Component}
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      )}
+    </UploadContext.Provider>
   );
 };
 export default Upload;

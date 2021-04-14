@@ -356,17 +356,7 @@ class Utils {
   }
 
   static getLargestArray(arr: any[]) {
-    let largest = 0,
-      largestOrigin = [];
-    for (let i = 0; i < arr.length; i++) {
-      for (var j = 0; j < arr[i].length; j++) {
-        if (arr[i][j] > largest) {
-          largest = arr[i][j];
-          largestOrigin = arr[i];
-        }
-      }
-    }
-    return largestOrigin;
+    return arr.reduce((a, b) => (a.length > b.length ? a : b));
   }
 
   static createTable(ar: any[]) {
@@ -378,6 +368,22 @@ class Utils {
         )}</tr>`),
       ""
     )}</table>`;
+  }
+  static encodeBase64(obj: any) {
+    try {
+      return window.btoa(encodeURIComponent(JSON.stringify(obj)));
+    } catch {
+      return "";
+    }
+  }
+
+  static decodeBase64(obj: any) {
+    try {
+      const str = obj.toString();
+      return JSON.parse(decodeURIComponent(window.atob(str)));
+    } catch {
+      return {};
+    }
   }
 }
 
