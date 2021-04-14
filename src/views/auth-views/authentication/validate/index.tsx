@@ -17,10 +17,7 @@ function Validate(props: RouteComponentProps) {
   useEffect(() => {
     if (Boolean(query.get("isManage"))) {
       sessionStorage.setItem("c_id", query.get("company_id")!);
-      Utils.setManageToken(
-        `ManageToken_${query.get("company_id")}`,
-        query.get("token")!
-      );
+      Utils.setManageToken(query.get("company_id")!, query.get("token")!);
       props.history.push(APP_PREFIX_PATH);
     } else {
       Utils.setToken(query.get("token")!);

@@ -1,4 +1,5 @@
 const dev = {
+  APP_ENV: "dev",
   API_AUTH_URL: "https://dev.edi.md/ISAuthService/json",
   API_SMS_URL: "https://dev.edi.md/SMSService/json",
   API_MAIL_URL: "https://dev.edi.md/ISMailService/json",
@@ -8,6 +9,7 @@ const dev = {
 };
 
 const prod = {
+  APP_ENV: "prod",
   API_AUTH_URL: "https://api.edi.md/ISAuthService/json",
   API_SMS_URL: "https://api.edi.md/SMSService/json",
   API_MAIL_URL: "https://api.edi.md/ISMailService/json",
@@ -17,6 +19,7 @@ const prod = {
 };
 
 const test = {
+  APP_ENV: "test",
   API_AUTH_URL: "https://dev.edi.md/ISAuthService/json",
   API_SMS_URL: "https://dev.edi.md/SMSService/json",
   API_MAIL_URL: "https://dev.edi.md/ISMailService/json",

@@ -6,6 +6,7 @@ import axios, {
   CancelTokenSource,
 } from "axios";
 import { API_AUTH_URL, DOMAIN } from "configs/AppConfig";
+import { MANAGE_TOKEN, TOKEN } from "constants/ApiConstant";
 import { EXPIRE_TIME } from "constants/Messages";
 import Cookies from "js-cookie";
 import {
@@ -50,8 +51,8 @@ class HttpService {
     this._source = axios.CancelToken.source();
     this.company_id = sessionStorage.getItem("c_id");
     this.token = this.company_id
-      ? Cookies.get(`ManageToken_${this.company_id}`)
-      : Cookies.get("Token");
+      ? Cookies.get(`${MANAGE_TOKEN}_${this.company_id}`)
+      : Cookies.get(TOKEN);
     this._initializeResponseInterceptor();
     this._initializeRequestInterceptor();
   }
@@ -74,7 +75,7 @@ class HttpService {
     this.token = Token;
     Utils.setToken(Token);
     this.company_id
-      ? Utils.setManageToken(`ManageToken_${this.company_id}`, Token)
+      ? Utils.setManageToken(this.company_id, Token)
       : Utils.setToken(Token);
   };
   private _handleRequest = (config: AxiosRequestConfig) => {
