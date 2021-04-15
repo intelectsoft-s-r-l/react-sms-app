@@ -51,8 +51,10 @@ const Upload = (props: RouteComponentProps) => {
       .GetContactList(+query.get("id")!)
       .then((data) => {
         setLoading(false);
-        if (data && data.ErrorCode === EnErrorCode.NO_ERROR)
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          dispatch({ type: "SET_ADDRESSBOOK", payload: data.ContactsList });
           setAddressBook(data.ContactsList);
+        }
       });
   };
   useEffect(() => {
@@ -72,16 +74,6 @@ const Upload = (props: RouteComponentProps) => {
       />
     );
   }
-  if (state.hasUploaded && !state.hasVariables) {
-    return <ContactResult />;
-    // Show result
-    // If the user has uploaded/inserted the numbers
-    // if there are no variables (numbers are from each line) show the result
-    // else show the contacts table where the user chooses which is which
-  }
-  if (state.hasUploaded && state.hasVariables) {
-    // Show table with contacts and variables
-  }
   return (
     <UploadContext.Provider value={{ state, dispatch }}>
       <PageHeader
@@ -97,20 +89,21 @@ const Upload = (props: RouteComponentProps) => {
             ({addressBook.Phone} contacts)
           </div>
         }
-      />
-      {state.hasUploaded && !state.hasVariables ? (
-        <ContactResult />
-      ) : state.hasUploaded && state.hasVariables ? (
-        <ContactTable />
-      ) : (
-        <Tabs defaultActiveKey="2" type="card">
-          {uploadTabs(props).map(({ key, title, component: Component }) => (
-            <Tabs.TabPane tab={title} key={key}>
-              {Component}
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
-      )}
+      >
+        {state.hasUploaded && !state.hasVariables ? (
+          <ContactResult />
+        ) : state.hasUploaded && state.hasVariables ? (
+          <ContactTable />
+        ) : (
+          <Tabs defaultActiveKey="2" type="line">
+            {uploadTabs(props).map(({ key, title, component: Component }) => (
+              <Tabs.TabPane tab={title} key={key}>
+                {Component}
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
+        )}
+      </PageHeader>
     </UploadContext.Provider>
   );
 };

@@ -18,6 +18,8 @@ import Utils from "utils";
 import { UploadChangeParam } from "antd/lib/upload";
 import ContactResult from "./ContactResult";
 import { UploadContext } from "./uploadContext";
+import { MailService } from "api/mail";
+import { EnErrorCode } from "api";
 
 const listData = [
   {
@@ -38,12 +40,15 @@ const listData = [
 
 const UploadFile = () => {
   const { state, dispatch } = React.useContext(UploadContext);
-  const onFinish = () => {
-    if (!state.contacts) {
+  const query = useQuery();
+  const onFinish = async () => {
+    if (!state.uploadedContacts) {
       return;
     }
-    // API CALL
-    dispatch({ type: "SET_HAS_UPLOADED" });
+    dispatch({
+      type: "SET_HAS_UPLOADED",
+      payload: Utils.decodeBase64(state.addressBook.ContactsData).variables,
+    });
   };
 
   const onChange = (info: UploadChangeParam<any>) => {
