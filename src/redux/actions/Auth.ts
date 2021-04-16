@@ -55,11 +55,9 @@ export const authorizeUser = (
     .then((data) => {
       if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
         Utils.setToken(data.Token);
-        window.history.pushState(null, "", APP_PREFIX_PATH);
-        window.location.reload();
-      } else {
-        dispatch(showAuthMessage(data.ErrorMessage.toString()));
+        dispatch({ type: AUTHENTICATED });
       }
+      dispatch(showAuthMessage(data.ErrorMessage.toString()));
     })
     .catch(() => dispatch(hideLoading()))
     .finally(() => dispatch(hideLoading()));

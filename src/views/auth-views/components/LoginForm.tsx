@@ -33,11 +33,10 @@ const LoginForm = ({
   extra,
   loading,
   showMessage,
-  hideLoading,
   message,
-  authenticated,
   authorizeUser,
-  getProfileInfo,
+  isAuth,
+  redirect,
 }: any) => {
   const history = useHistory();
   const onLogin = ({ email, password }: OnLogin) => {
@@ -49,18 +48,10 @@ const LoginForm = ({
       );
     }, 1000);
   };
-  const onGoogleLogin = () => {
-    showLoading();
-  };
-
-  const onFacebookLogin = () => {
-    showLoading();
-  };
 
   useEffect(() => {
-    hideLoading();
-  }, []);
-
+    if (isAuth) history.push(redirect);
+  }, [isAuth]);
   useEffect(() => {
     if (showMessage) {
       setTimeout(() => {
@@ -68,34 +59,6 @@ const LoginForm = ({
       }, 3000);
     }
   }, [showMessage]);
-  const otherSignIn = false;
-
-  const renderOtherSignIn = (
-    <div>
-      <Divider>
-        <span className="text-muted font-size-base font-weight-normal">
-          or connect with
-        </span>
-      </Divider>
-      <div className="d-flex justify-content-center">
-        <Button
-          onClick={() => onGoogleLogin()}
-          className="mr-2"
-          disabled={loading}
-          icon={<CustomIcon svg={GoogleSVG} />}
-        >
-          Google
-        </Button>
-        <Button
-          onClick={() => onFacebookLogin()}
-          icon={<CustomIcon svg={FacebookSVG} />}
-          disabled={loading}
-        >
-          Facebook
-        </Button>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -168,7 +131,6 @@ const LoginForm = ({
           <IntlMessage id={"auth.ForgotPassword"} />
         </NavLink>
         {/*{otherSignIn ? renderOtherSignIn : null}*/}
-        {otherSignIn && renderOtherSignIn}
         {extra}
       </Form>
     </>
@@ -182,9 +144,11 @@ const mapStateToProps = ({ auth }: IState) => {
     showMessage,
     redirect,
     userActivated,
+    isAuth,
   } = auth as IAuth;
   return {
     loading,
+    isAuth,
     message,
     showMessage,
     redirect,

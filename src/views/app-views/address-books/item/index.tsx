@@ -41,9 +41,7 @@ const BookItem = (props: RouteComponentProps) => {
         title={<h1>{book.Name}</h1>}
         onBack={() => props.history.goBack()}
       />
-      <Card>
-        <ContactList book={book} />
-      </Card>
+      <ContactList book={book} />
     </>
   );
 };

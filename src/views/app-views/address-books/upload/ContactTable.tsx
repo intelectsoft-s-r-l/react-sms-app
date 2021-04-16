@@ -49,6 +49,8 @@ export const selectBoxArray = [
     title: "Gender",
   },
 ];
+// REFACTOR THIS
+// Insert in contacts all Titles of SELECTBOXARRAY
 function ContactTable() {
   const { state, dispatch } = React.useContext(UploadContext);
   const query = useQuery();
@@ -124,7 +126,10 @@ function ContactTable() {
     if (isThereEmailOrPhone) {
       const data = {
         variables: headers[0],
-        contacts: filteredContactsData,
+        contacts: {
+          ...Utils.decodeBase64(state.addressBook.ContactsData).contacts,
+          ...filteredContactsData,
+        },
       };
       dispatch({ type: "SUBMIT_CONTACTS" });
       await updateAddressBook(data);

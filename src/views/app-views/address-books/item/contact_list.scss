@@ -1,0 +1,22 @@
+#contact-table {
+  display: table;
+  
+  .header-row { 
+  }
+
+  .table-col {
+    display: table-column;
+  }
+
+  .table-cell {
+    display: table-cell;
+  }
+
+  td:empty::after {
+    content: "\00a0";
+  }
+  tr:empty::after {
+    content: "\00a0";
+  }
+}
+
