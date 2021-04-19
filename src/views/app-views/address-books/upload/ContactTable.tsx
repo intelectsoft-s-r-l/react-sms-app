@@ -23,30 +23,22 @@ export const selectBoxArray = [
   {
     value: EnSelect.DISABLED,
     title: "Disabled",
+    isDefault: true,
   },
   {
     value: EnSelect.CREATE,
     title: "Create variable",
+    isDefault: true,
   },
   {
     value: EnSelect.PHONE,
     title: "Phone",
+    isDefault: true,
   },
   {
     value: EnSelect.EMAIL,
     title: "Email",
-  },
-  {
-    value: EnSelect.NAME,
-    title: "Name",
-  },
-  {
-    value: EnSelect.AGE,
-    title: "Age",
-  },
-  {
-    value: EnSelect.GENDER,
-    title: "Gender",
+    isDefault: true,
   },
 ];
 // REFACTOR THIS
@@ -55,20 +47,19 @@ function ContactTable() {
   const { state, dispatch } = React.useContext(UploadContext);
   const query = useQuery();
   const [headers, setHeaders] = useState<any[]>([]);
-  const [temp, setTemp] = useState<any[]>([
-    ["37373", "vlad", "1999"],
-    ["373737", "greta", "1998"],
-  ]);
+  const [largestOrigin, setLargestOrigin] = useState<number[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const selectRefs = React.useRef<any[]>([]);
+  const trRefs = React.useRef<any[]>([]);
   //
   // Make API call and get all the variables and contacts
   // Dispatch them into the UploadContext state
   //
   useEffect(() => {
     //dispatch({ type: "GET_VARIABLES_AND_CONTACTS" });
-    const largestOrigin = Utils.getLargestArray(state.uploadedContacts);
-    const headersToFill = new Array(largestOrigin.length).fill(
+    const lOrigin = Utils.getLargestArray(state.uploadedContacts);
+    setLargestOrigin(lOrigin);
+    const headersToFill = new Array(lOrigin.length).fill(
       Utils.decodeBase64(state.addressBook.ContactsData).variables ??
         selectBoxArray
     ); // Get SelectBoxArray from API
@@ -83,14 +74,20 @@ function ContactTable() {
         };
       });
     });
+    console.log(obj);
     // CONTACTS
     setSelected(obj);
 
     selectRefs.current = headersToFill.map(
       (element: any, i: any) => selectRefs.current[i] ?? React.createRef()
     );
+
+    trRefs.current = state.uploadedContacts.map(
+      (element: any, idx: number) => trRefs.current[idx] ?? React.createRef()
+    );
     // VARIABLES
     setHeaders(headersToFill);
+    console.log(state.uploadedContacts);
   }, []);
   useEffect(() => {
     console.log({ selected }, headers[0]);
@@ -112,11 +109,6 @@ function ContactTable() {
   };
 
   const addContacts = async () => {
-    let filteredContactsData = Object.fromEntries(
-      Object.entries(selected).filter(
-        ([key, sel]: any) => sel["variableId"] !== EnSelect.DISABLED
-      )
-    );
     let isThereEmailOrPhone = Object.keys(selected).some((sel: any) => {
       return (
         selected[sel]["variableId"] === EnSelect.PHONE ||
@@ -124,15 +116,29 @@ function ContactTable() {
       );
     });
     if (isThereEmailOrPhone) {
-      const data = {
-        variables: headers[0],
-        contacts: {
-          ...Utils.decodeBase64(state.addressBook.ContactsData).contacts,
-          ...filteredContactsData,
-        },
-      };
-      dispatch({ type: "SUBMIT_CONTACTS" });
-      await updateAddressBook(data);
+      let copyData: any[] = [];
+      let finalData: any[] = [];
+      let tempHeaders: any[] = [];
+      for (let i = 0; i < state.uploadedContacts.length; i++) {
+        copyData = state.uploadedContacts[i];
+        tempHeaders = [...headers[0]];
+        for (let j = 0; j < copyData.length; j++) {
+          for (let k = 0; k < tempHeaders.length; k++) {
+            if (
+              tempHeaders[k].value === selected[j]["variableId"] &&
+              tempHeaders[k].value !== EnSelect.DISABLED
+            ) {
+              tempHeaders[k].data = copyData[j];
+            }
+          }
+          finalData.push(tempHeaders);
+          tempHeaders = [];
+          debugger;
+        }
+      }
+      console.log(finalData);
+      //dispatch({ type: "SUBMIT_CONTACTS" });
+      //await updateAddressBook(null);
       // TODO: Call API service in ContactResult
     } else {
       message.error({
@@ -163,6 +169,7 @@ function ContactTable() {
       (el) => +el.current.dataset.id === state.selectId
     );
     currentTarget.current.focus();
+
     currentTarget.current.value = newId;
     setSelected((prev: any) => {
       return {
@@ -220,19 +227,25 @@ function ContactTable() {
                 </th>
               ))}
             </tr>
-            {state.uploadedContacts &&
-              state.uploadedContacts.map((item: any, index: any) => {
-                return (
-                  <tr key={index}>
-                    {item.map((elm: any, tdIndex: any) => {
-                      if (!elm) {
-                        return;
-                      }
-                      return <td key={tdIndex}>{elm}</td>;
-                    })}
-                  </tr>
-                );
-              })}
+            {state.uploadedContacts.map((item: any, index: any) => {
+              let diff = 0;
+              if (item.length < largestOrigin.length) {
+                diff = largestOrigin.length - item.length;
+                for (let i = 0; i < diff; i++) {
+                  item.push("-"); // Complect empty columns
+                }
+              }
+              return (
+                <tr key={index} ref={trRefs.current[index]}>
+                  {item.map((elm: any, tdIndex: any) => {
+                    if (!elm) {
+                      return;
+                    }
+                    return <td key={tdIndex}>{elm.trim()}</td>;
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,5 +1,5 @@
 import Utils from "utils";
-import { selectBoxArray } from "./ContactTable";
+import { EnSelect } from "./ContactTable";
 
 export const uploadState = {
   hasUploaded: false,
@@ -11,10 +11,7 @@ export const uploadState = {
   isCreateVisible: false,
   selectId: 0,
   addressBook: null,
-  contactsData: {
-    contacts: null,
-    variables: [],
-  },
+  contacts: [],
   headers: [],
   canBeSend: false,
 } as any;
@@ -27,59 +24,67 @@ type ContactInstance = {
 type SelectHeader = {
   value: number;
   title: string;
+  isDefault: boolean;
 }[];
 type SelectHeaderItem = {};
+export const selectBoxArray = [
+  {
+    id: EnSelect.DISABLED,
+    title: "Disabled",
+    isDefault: true,
+  },
+  {
+    id: EnSelect.CREATE,
+    title: "Create variable",
+    isDefault: true,
+  },
+  {
+    id: EnSelect.PHONE,
+    title: "Phone",
+    isDefault: true,
+  },
+  {
+    id: EnSelect.EMAIL,
+    title: "Email",
+    isDefault: true,
+  },
+];
 export const uploadReducer = (state = uploadState, action: any) => {
   switch (action.type) {
-    case "SET_CONTACTS":
+    case "UPLOAD_CONTACTS":
       return {
         ...state,
         uploadedContacts: action.payload,
       };
-    case "SET_CONTACTS_WITH_VAR":
+    case "UPLOAD_CONTACTS_WITH_VAR":
       return {
         ...state,
         uploadedContacts: action.payload,
         hasVariables: true,
       };
-    case "GET_VARIABLES_AND_CONTACTS":
+    case "SET_HEADERS":
       const largestOrigin = Utils.getLargestArray(state.uploadedContacts);
       const headers: SelectHeader[] = new Array(largestOrigin.length).fill(
-        Utils.decodeBase64(state.addressBook.ContactsData).variables ??
-          selectBoxArray
+        selectBoxArray // Get the headers from the API
       );
-      let obj: ContactInstance = {};
-      headers.forEach((header, index) => {
-        header.forEach((head) => {
-          obj[index] = {
-            variableId: 0,
-            contacts: state.uploadedContacts.map(
-              (contact: any) => contact[index]
-            ),
-          };
-        });
-      });
+      console.log(headers);
       return {
         ...state,
-        contactsData: {
-          // selected
-          contacts: obj,
-          variables: headers[0],
-        },
         headers,
       };
-    case "UPDATE_CONTACTS":
+    case "SET_CONTACTS":
+      const contactsData: any[] = state.headers.map(
+        (header: any, idx: number, array: any[]) => {
+          return header.reduce((acc: any, currVal: any, idx: number) => {
+            acc[currVal.title] = "";
+            return { ...acc, id: header[idx].id };
+          }, {});
+        }
+      );
+      console.log(contactsData);
       return {
         ...state,
-        contactsData: {
-          contacts: {
-            ...state.contactsData.contacts,
-            [action.contactId]: {
-              variableId: [action.variableId],
-              contacts: state.contactsData.contacts[action.variableId].contacts,
-            },
-          },
-        },
+        contacts: contactsData,
       };
     case "SET_HAS_UPLOADED":
       return {

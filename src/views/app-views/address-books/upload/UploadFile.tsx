@@ -47,7 +47,6 @@ const UploadFile = () => {
     }
     dispatch({
       type: "SET_HAS_UPLOADED",
-      payload: Utils.decodeBase64(state.addressBook.ContactsData).variables,
     });
   };
 
@@ -64,11 +63,11 @@ const UploadFile = () => {
             if (array.length > 1) {
               // If there is more than one contact per row,
               // it's considered it has variables
-              dispatch({ type: "SET_CONTACTS_WITH_VAR", payload: data });
+              dispatch({ type: "UPLOAD_CONTACTS_WITH_VAR", payload: data });
             }
             // No variables
             // Each contact starts from new line
-            dispatch({ type: "SET_CONTACTS", payload: data });
+            dispatch({ type: "UPLOAD_CONTACTS", payload: data });
           });
         });
         message.success("Contacts imported");
