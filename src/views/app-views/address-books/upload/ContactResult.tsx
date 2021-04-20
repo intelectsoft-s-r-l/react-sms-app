@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { Alert, Button } from "antd";
 import ContactTable from "./ContactTable";
 import Loading from "components/shared-components/Loading";
+import { MailService } from "api/mail";
+import { UploadContext } from "./uploadContext";
+import { EnErrorCode } from "api";
 
 const getResults = (lines: number, phones: number, emails: number) => [
   {
@@ -20,6 +23,18 @@ const getResults = (lines: number, phones: number, emails: number) => [
 ];
 function ContactResult(props: any) {
   const [loading, setLoading] = useState<boolean>(true);
+  const { state, dispatch } = React.useContext(UploadContext);
+  const updateAddressBook = async (data: any) => {
+    return await new MailService()
+      .UpdateContactList({
+        ...state.addressBook,
+        ContactsData: null, //
+      })
+      .then((data) => {
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+        }
+      });
+  };
   return (
     <>
       <Alert

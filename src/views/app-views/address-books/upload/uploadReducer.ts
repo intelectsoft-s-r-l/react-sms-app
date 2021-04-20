@@ -11,7 +11,7 @@ export const uploadState = {
   isCreateVisible: false,
   selectId: 0,
   addressBook: null,
-  contacts: [],
+  selected: null,
   headers: [],
   canBeSend: false,
 } as any;
@@ -21,34 +21,14 @@ type ContactInstance = {
     contacts: string[];
   };
 };
-type SelectHeader = {
+export type Headers = {
   value: number;
   title: string;
-  isDefault: boolean;
-}[];
-type SelectHeaderItem = {};
-export const selectBoxArray = [
-  {
-    id: EnSelect.DISABLED,
-    title: "Disabled",
-    isDefault: true,
-  },
-  {
-    id: EnSelect.CREATE,
-    title: "Create variable",
-    isDefault: true,
-  },
-  {
-    id: EnSelect.PHONE,
-    title: "Phone",
-    isDefault: true,
-  },
-  {
-    id: EnSelect.EMAIL,
-    title: "Email",
-    isDefault: true,
-  },
-];
+  isDefault?: boolean;
+};
+type SelectedType = {
+  [index: number]: { variableId: number; contacts: string[] };
+};
 export const uploadReducer = (state = uploadState, action: any) => {
   switch (action.type) {
     case "UPLOAD_CONTACTS":
@@ -57,55 +37,75 @@ export const uploadReducer = (state = uploadState, action: any) => {
         uploadedContacts: action.payload,
       };
     case "UPLOAD_CONTACTS_WITH_VAR":
+      const contacts = action.payload
+        .map((contacts: string[]) =>
+          contacts.filter((contact: string) => contact)
+        )
+        .filter((value: string) => JSON.stringify(value) !== "[]")
+        .filter((value: string) => JSON.stringify(value) !== '[""]');
+      const largestOrigin = Utils.getLargestArray(contacts);
+      // Depending on the amount of columns, the amount of header arrays will be accordingly
+      const headers: Headers[][] = new Array(largestOrigin.length).fill(
+        action.headers
+      );
+      let selected: SelectedType = {};
+      headers.forEach((_: Headers[], index: number) => {
+        selected[index] = {
+          // TODO: Check if there are emails/phones and set the variableId accordingly
+          variableId: EnSelect.DISABLED,
+          contacts: contacts.map((contact: string[]) => contact[index]),
+        };
+      });
       return {
         ...state,
-        uploadedContacts: action.payload,
+        uploadedContacts: contacts,
+        headers,
+        selected,
         hasVariables: true,
       };
-    case "SET_HEADERS":
-      const largestOrigin = Utils.getLargestArray(state.uploadedContacts);
-      const headers: SelectHeader[] = new Array(largestOrigin.length).fill(
-        selectBoxArray // Get the headers from the API
-      );
-      console.log(headers);
+    case "ON_SELECT_CHANGE":
+      // change selected state
+      const { target } = action;
       return {
         ...state,
-        headers,
-      };
-    case "SET_CONTACTS":
-      const contactsData: any[] = state.headers.map(
-        (header: any, idx: number, array: any[]) => {
-          return header.reduce((acc: any, currVal: any, idx: number) => {
-            acc[currVal.title] = "";
-            return { ...acc, id: header[idx].id };
-          }, {});
-        }
-      );
-      console.log(contactsData);
-      return {
-        ...state,
-        contacts: contactsData,
+        selected: {
+          ...state.selected,
+          [+target.dataset.id]: {
+            variableId: +target.value,
+            contacts: state.selected[+target.dataset.id].contacts ?? [],
+          },
+        },
       };
     case "SET_HAS_UPLOADED":
       return {
         ...state,
         hasUploaded: true,
       };
-    case "CREATE_VARIABLE":
-      let newId = 0;
+    case "CREATE_VARIABLE": {
+      // change both headers and selected state
+      const { target, id, variableName } = action;
       return {
         ...state,
-        headers: state.headers.map((selectElements: any, index: any) => {
-          newId = selectElements.length;
+        headers: state.headers.map((elements: any, index: number) => {
           return [
-            ...selectElements,
+            ...elements,
             {
-              value: newId,
-              title: action.title,
+              value: id,
+              title: variableName,
+              isDefault: false,
             },
           ];
         }),
+        selected: {
+          ...state.selected,
+          [+target.dataset.id!]: {
+            variableId: id,
+            contacts: state.selected[+target.dataset.id].contacts,
+          },
+        },
+        isCreateVisible: false,
       };
+    }
     case "SET_ADDRESSBOOK":
       return {
         ...state,

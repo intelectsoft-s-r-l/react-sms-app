@@ -12,7 +12,6 @@ import {
   message,
 } from "antd";
 import { useQuery } from "utils/hooks/useQuery";
-import { addContactNumbers } from "..";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Utils from "utils";
 import { UploadChangeParam } from "antd/lib/upload";
@@ -20,6 +19,7 @@ import ContactResult from "./ContactResult";
 import { UploadContext } from "./uploadContext";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
+import { predefinedHeaders } from "./ContactTable";
 
 const listData = [
   {
@@ -63,11 +63,21 @@ const UploadFile = () => {
             if (array.length > 1) {
               // If there is more than one contact per row,
               // it's considered it has variables
-              dispatch({ type: "UPLOAD_CONTACTS_WITH_VAR", payload: data });
+              dispatch({
+                type: "UPLOAD_CONTACTS_WITH_VAR",
+                payload: data,
+                headers:
+                  Utils.decodeBase64(state.addressBook.ContactsData)
+                    .variables ?? predefinedHeaders,
+              });
+            } else {
+              // No variables
+              // Each contact starts from new line
+              dispatch({
+                type: "UPLOAD_CONTACTS",
+                payload: data,
+              });
             }
-            // No variables
-            // Each contact starts from new line
-            dispatch({ type: "UPLOAD_CONTACTS", payload: data });
           });
         });
         message.success("Contacts imported");

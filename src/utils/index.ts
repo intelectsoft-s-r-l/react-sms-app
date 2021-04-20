@@ -356,6 +356,9 @@ class Utils {
   }
 
   static getLargestArray(arr: any[]) {
+    if (!arr) {
+      return;
+    }
     return arr.reduce((a, b) => (a.length > b.length ? a : b));
   }
 
