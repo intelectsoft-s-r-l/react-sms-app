@@ -11,10 +11,6 @@ const InsertManually = (props: IUploadProps) => {
   const query = useQuery();
   const { state, dispatch } = React.useContext(UploadContext);
   const onFinish = ({ Contacts }: any) => {
-    // Check whether the user inserted email/phone
-    // Generate array of rows: [ { [Phone/Email]: "373..."}]
-    // If there are variables redirect to ContactTable component
-
     const data = Utils.CSVToArray(Contacts);
     uploadContacts(data);
     dispatch({ type: "SET_HAS_UPLOADED" });

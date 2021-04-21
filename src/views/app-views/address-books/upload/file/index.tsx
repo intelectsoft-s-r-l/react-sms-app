@@ -56,6 +56,7 @@ const UploadFile = (props: IUploadProps) => {
         const data: Array<string[]> = Utils.CSVToArray(
           ev.target!.result as string
         );
+        console.log(data);
         uploadContacts(data);
         message.success("Contacts imported");
       };

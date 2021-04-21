@@ -60,7 +60,7 @@ function ContactResult(props: any) {
       });
     setContacts(data);
     console.log(data);
-    updateAddressBook(data);
+    //updateAddressBook(data);
   }, []);
   const updateAddressBook = async (dataToSend: any) => {
     const variables =

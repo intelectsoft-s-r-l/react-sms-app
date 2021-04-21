@@ -62,51 +62,28 @@ const Upload = (props: RouteComponentProps) => {
       await getContactList();
     })();
   }, [query.get("id")]);
+
   const uploadContacts = (data: any[]) => {
+    let hasVariables = false;
     data.forEach((contacts) => {
       contacts.forEach((_: any, __: any, array: any) => {
         if (array.length > 1) {
-          // If there is more than one contact per row,
-          // it's considered it has variables
-          // TODO: Pass the contacts through regex
-          dispatch({
-            type: "UPLOAD_CONTACTS_WITH_VAR",
-            payload: data,
-            headers:
-              Utils.decodeBase64(state.addressBook.ContactsData).variables ??
-              predefinedHeaders,
-          });
-        } else {
-          // No variables
-          // Each contact starts from new line
-          const finalData: any = [];
-          data.forEach((contacts: string[], idx: number) => {
-            let temp: any = {};
-            const varKey = contacts.reduce((acc, elem) => {
-              if (Utils.isEmail(elem)) {
-                return "Email";
-              }
-              return "Phone";
-            }, "");
-            contacts
-              .filter((elem) => elem.length)
-              .forEach((elem) => {
-                if (Utils.isEmail(elem)) {
-                  temp.Email = elem;
-                } else {
-                  temp.Phone = elem;
-                }
-                temp.id = shortid.generate();
-              });
-            finalData.push(temp);
-          });
-          dispatch({
-            type: "UPLOAD_CONTACTS",
-            payload: finalData,
-          });
+          hasVariables = true;
         }
       });
     });
+    hasVariables
+      ? dispatch({
+          type: "UPLOAD_CONTACTS_WITH_VAR",
+          payload: data,
+          headers:
+            Utils.decodeBase64(state.addressBook.ContactsData).variables ??
+            predefinedHeaders,
+        })
+      : dispatch({
+          type: "UPLOAD_CONTACTS",
+          payload: data,
+        });
   };
   if (loading) {
     return <Loading />;

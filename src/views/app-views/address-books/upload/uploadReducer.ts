@@ -1,5 +1,7 @@
 import Utils from "utils";
 import { EnSelect } from "./ContactTable";
+// @ts-ignore
+import shortid from "shortid";
 
 export const uploadState = {
   hasUploaded: false,
@@ -32,9 +34,30 @@ type SelectedType = {
 export const uploadReducer = (state = uploadState, action: any) => {
   switch (action.type) {
     case "UPLOAD_CONTACTS":
+      const data: any[] = [];
+      action.payload.forEach((contacts: string[], idx: number) => {
+        let temp: any = {};
+        const varKey = contacts.reduce((acc, elem) => {
+          if (Utils.isEmail(elem)) {
+            return "Email";
+          }
+          return "Phone";
+        }, "");
+        contacts
+          .filter((elem) => elem.length)
+          .forEach((elem) => {
+            if (Utils.isEmail(elem)) {
+              temp.Email = elem;
+            } else {
+              temp.Phone = elem;
+            }
+            temp.id = shortid.generate();
+          });
+        data.push(temp);
+      });
       return {
         ...state,
-        uploadedContacts: action.payload,
+        uploadedContacts: data,
         hasVariables: false,
       };
     case "UPLOAD_CONTACTS_WITH_VAR":
