@@ -1,14 +1,23 @@
 import * as React from "react";
 import { Input, Form, Button, Alert, Card } from "antd";
 import { useQuery } from "utils/hooks/useQuery";
-import { addContactNumbers } from "..";
 import { RouteComponentProps } from "react-router";
+import { UploadContext } from "../uploadContext";
+import { IUploadProps } from "../";
+import Utils from "utils";
 
-const InsertManually = (props: RouteComponentProps) => {
+const InsertManually = (props: IUploadProps) => {
+  const { uploadContacts } = props;
   const query = useQuery();
-  const onFinish = (values: any) => {
-    addContactNumbers(+query.get("id")!, values.Contacts.split(","));
-    props.history.push(props.match.url);
+  const { state, dispatch } = React.useContext(UploadContext);
+  const onFinish = ({ Contacts }: any) => {
+    // Check whether the user inserted email/phone
+    // Generate array of rows: [ { [Phone/Email]: "373..."}]
+    // If there are variables redirect to ContactTable component
+
+    const data = Utils.CSVToArray(Contacts);
+    uploadContacts(data);
+    dispatch({ type: "SET_HAS_UPLOADED" });
   };
   return (
     <Card style={{ width: "40%" }}>
@@ -28,7 +37,14 @@ const InsertManually = (props: RouteComponentProps) => {
             //},
           ]}
         >
-          <Input.TextArea placeholder="373797979,373787878..." />
+          <Input.TextArea
+            rows={6}
+            placeholder="373797979, variable1, variable2...
+373787878, variable1, variable2...
+or
+example@email.com, variable1, variable2...
+example2@email.com, variable1, variable2..."
+          />
         </Form.Item>
         <div className="d-flex justify-content-between">
           <p>

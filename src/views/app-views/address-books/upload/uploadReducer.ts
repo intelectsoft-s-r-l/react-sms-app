@@ -35,6 +35,7 @@ export const uploadReducer = (state = uploadState, action: any) => {
       return {
         ...state,
         uploadedContacts: action.payload,
+        hasVariables: false,
       };
     case "UPLOAD_CONTACTS_WITH_VAR":
       const contacts = action.payload
@@ -115,6 +116,8 @@ export const uploadReducer = (state = uploadState, action: any) => {
       return {
         ...state,
         hasVariables: false,
+        uploadedContacts: action.payload,
+        headers: action.headers,
       };
     }
     case "SHOW_CREATE_VISIBLE":

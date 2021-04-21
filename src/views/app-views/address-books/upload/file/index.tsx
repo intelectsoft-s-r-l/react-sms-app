@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 import {
   Form,
   Button,
@@ -15,11 +15,8 @@ import { useQuery } from "utils/hooks/useQuery";
 import { ROW_GUTTER } from "constants/ThemeConstant";
 import Utils from "utils";
 import { UploadChangeParam } from "antd/lib/upload";
-import ContactResult from "./ContactResult";
-import { UploadContext } from "./uploadContext";
-import { MailService } from "api/mail";
-import { EnErrorCode } from "api";
-import { predefinedHeaders } from "./ContactTable";
+import { UploadContext } from "../uploadContext";
+import { IUploadProps } from "../";
 
 const listData = [
   {
@@ -38,9 +35,10 @@ const listData = [
   },
 ];
 
-const UploadFile = () => {
+const UploadFile = (props: IUploadProps) => {
   const { state, dispatch } = React.useContext(UploadContext);
   const query = useQuery();
+  const { uploadContacts } = props;
   const onFinish = async () => {
     if (!state.uploadedContacts) {
       return;
@@ -58,28 +56,7 @@ const UploadFile = () => {
         const data: Array<string[]> = Utils.CSVToArray(
           ev.target!.result as string
         );
-        data.forEach((contacts) => {
-          contacts.forEach((_, __, array) => {
-            if (array.length > 1) {
-              // If there is more than one contact per row,
-              // it's considered it has variables
-              dispatch({
-                type: "UPLOAD_CONTACTS_WITH_VAR",
-                payload: data,
-                headers:
-                  Utils.decodeBase64(state.addressBook.ContactsData)
-                    .variables ?? predefinedHeaders,
-              });
-            } else {
-              // No variables
-              // Each contact starts from new line
-              dispatch({
-                type: "UPLOAD_CONTACTS",
-                payload: data,
-              });
-            }
-          });
-        });
+        uploadContacts(data);
         message.success("Contacts imported");
       };
     }
@@ -87,7 +64,7 @@ const UploadFile = () => {
   const isMobile = Utils.getBreakPoint(Grid.useBreakpoint()).includes("xl");
 
   return (
-    <Card className="w-75">
+    <Card style={{ maxWidth: "100%", width: "100%" }}>
       <Form layout="vertical" style={{ width: "100%" }} onFinish={onFinish}>
         <Row gutter={ROW_GUTTER}>
           <Col xl={14}>
@@ -97,14 +74,23 @@ const UploadFile = () => {
               required
               className="mt-3"
             >
-              <Upload
+              <Upload.Dragger
                 onChange={onChange}
                 showUploadList={false}
                 accept={".txt, .csv"}
                 customRequest={Utils.dummyRequest}
               >
-                <Button style={{ width: "100%" }}>Browse</Button>
-              </Upload>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag file to the area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload. Strictly prohibit from
+                  uploading company data or other band files
+                </p>
+              </Upload.Dragger>
             </Form.Item>
             <Form.Item className="text-right">
               <Button type="primary" htmlType="submit">
@@ -118,13 +104,15 @@ const UploadFile = () => {
               style={{ height: "100%", display: isMobile ? "" : "none" }}
             />
           </Col>
-          <Col xl={9}>
-            {listData.map((item) => (
-              <div>
-                <h5 style={{ color: "#3e82f7", margin: 0 }}>{item.title}</h5>
-                <p className="ml-2">{item.description}</p>
-              </div>
-            ))}
+          <Col xl={9} style={{ display: "flex", alignItems: "center" }}>
+            <div>
+              {listData.map((item) => (
+                <div>
+                  <h5 style={{ color: "#3e82f7", margin: 0 }}>{item.title}</h5>
+                  <p className="ml-2">{item.description}</p>
+                </div>
+              ))}
+            </div>
           </Col>
         </Row>
       </Form>

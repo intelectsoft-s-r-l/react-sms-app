@@ -388,6 +388,33 @@ class Utils {
       return {};
     }
   }
+
+  static isEmail(email: string) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+  static isNumeric(str: any) {
+    if (typeof str != "string") return false; // we only process strings!
+    return (
+      // @ts-ignore
+      !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+      !isNaN(parseFloat(str))
+    ); // ...and ensure strings of whitespace fail
+  }
+
+  static moveElement(
+    array: any[],
+    sourceIndex: number,
+    destinationIndex: number
+  ) {
+    return array.map((a) =>
+      a.value === sourceIndex
+        ? array.find((a) => a.value === destinationIndex)
+        : a.value === destinationIndex
+        ? array.find((a) => a.value === sourceIndex)
+        : a
+    );
+  }
 }
 
 export default Utils;

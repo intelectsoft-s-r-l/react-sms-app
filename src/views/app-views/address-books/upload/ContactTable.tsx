@@ -21,6 +21,9 @@ export enum EnSelect {
   GENDER = 5,
   AGE = 6,
 }
+export type ContactsToSubmit = {
+  [key: string]: string;
+};
 
 export const predefinedHeaders = [
   {
@@ -66,7 +69,7 @@ function ContactTable() {
       );
     });
     if (isThereEmailOrPhone) {
-      let finalData: any[] = [];
+      let finalData: ContactsToSubmit[] = [];
       uploadedContacts.forEach((contacts: string[]) => {
         let tempHeaders: any = {};
         contacts.forEach((contact: string, idx: number) => {
@@ -83,9 +86,10 @@ function ContactTable() {
         });
         finalData.push({ ...tempHeaders });
       });
-      console.log(finalData);
-      //dispatch({ type: "SUBMIT_CONTACTS" });
-      // TODO: Call API service in ContactResult by passing the finalData, to keep it DRY
+      dispatch({
+        type: "SUBMIT_CONTACTS",
+        payload: finalData,
+      });
     } else {
       // User has to select at least one email or phone
       message.error({
@@ -96,7 +100,7 @@ function ContactTable() {
     }
   };
 
-  const createVariable = (varName: string) => {
+  const createVariable = async (varName: string) => {
     const headerId = state.headers[0].length;
     // On the clicked dropdown make the default selected variable the one that was created
     const currentTarget = selectRefs.current.find(
@@ -110,6 +114,23 @@ function ContactTable() {
       id: headerId,
       variableName: varName,
     });
+    const data = {
+      variables: [
+        ...state.headers[0],
+        { value: headerId, title: varName, isDefault: false },
+      ],
+      contacts: Utils.decodeBase64(state.addressBook.ContactsData).contacts,
+    };
+    return new MailService()
+      .UpdateContactList({
+        ...state.addressBook,
+        ContactsData: Utils.encodeBase64(data),
+      })
+      .then((data) => {
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          message.success("Variable successfully created!");
+        }
+      });
   };
   return (
     <div>

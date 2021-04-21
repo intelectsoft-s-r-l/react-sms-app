@@ -2,7 +2,6 @@ import * as React from "react";
 import { Card, Menu } from "antd";
 import { Link, RouteComponentProps } from "react-router-dom";
 import EllipsisDropdown from "components/shared-components/EllipsisDropdown";
-import { deleteAddressBook } from ".";
 
 interface AddressBooksItemProps {
   Name: string;
@@ -23,7 +22,7 @@ const AddressBooksItem = (props: any) => {
         <div>
           <p>12/12/2020 16:40</p>
           <h3>
-            <Link to={match.url + `/item?id=${ID}`}>{Name}</Link>
+            <Link to={match.url + `/emails?id=${ID}`}>{Name}</Link>
           </h3>
           <div>
             {Phone > 0 ? (
@@ -36,15 +35,33 @@ const AddressBooksItem = (props: any) => {
             )}
           </div>
         </div>
-        <div className="text-center">
-          <EllipsisDropdown menu={handleDropdown(props)} isHorizontal />
-          <Link to={match.url + `/item?id=${ID}`}>
+        <div>
+          <div className="text-right">
+            <EllipsisDropdown menu={handleDropdown(props)} isHorizontal />
+          </div>
+          <div
+            className="d-flex justify-content-between align-items-center text-center"
+            style={{ width: "250px", maxWidth: "100%" }}
+          >
             <div>
-              <a style={{ fontSize: 30 }}>{Phone}</a>
-              <br />
-              <small>Phones</small>
+              <Link to={match.url + `/emails?id=${ID}`}>
+                <span style={{ display: "block" }}>
+                  <span style={{ fontSize: 30 }}>{Email}</span>
+                  <br />
+                  <small>Emails</small>
+                </span>
+              </Link>
             </div>
-          </Link>
+            <div>
+              <Link to={match.url + `/phones?id=${ID}`}>
+                <span style={{ display: "block" }}>
+                  <span style={{ fontSize: 30 }}>{Phone}</span>
+                  <br />
+                  <small>Phones</small>
+                </span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </Card>

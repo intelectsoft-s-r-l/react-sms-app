@@ -11,27 +11,6 @@ import { ContactList } from "api/mail/types";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
 
-export async function setAddressBooks(addressBook: any) {
-  const book = JSON.parse(localStorage.getItem("address-books") ?? "[]");
-  book.push(addressBook);
-  localStorage.setItem("address-books", JSON.stringify(book));
-}
-export function getAddressBooks() {
-  return JSON.parse(localStorage.getItem("address-books")!);
-}
-export function deleteAddressBook(id: number) {
-  const books = JSON.parse(localStorage.getItem("address-books") ?? "[]");
-  const newBooks = books.filter((elem: any) => elem.id !== id);
-  localStorage.setItem("address-books", JSON.stringify(newBooks));
-}
-export function addContactNumbers(id: number, numbers: number[]) {
-  const books = JSON.parse(localStorage.getItem("address-books") ?? "[]");
-  const bookToBeUpdated = books.find((elem: any) => elem.id === id);
-  bookToBeUpdated["Contacts"] = numbers;
-  books.push(bookToBeUpdated);
-  // @ts-ignore
-  localStorage.setItem("address-books", JSON.stringify([...new Set(books)]));
-}
 const AddressBooks = (props: RouteComponentProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [addressBooks, setAddressBooks] = useState<ContactList[]>([]);
@@ -79,7 +58,10 @@ const AddressBooks = (props: RouteComponentProps) => {
       <Route path={props.match.url + "/upload"}>
         <Upload {...props} />
       </Route>
-      <Route path={props.match.url + "/item"}>
+      <Route path={props.match.url + "/phones"}>
+        <BookItem {...props} />
+      </Route>
+      <Route path={props.match.url + "/emails"}>
         <BookItem {...props} />
       </Route>
     </Switch>
