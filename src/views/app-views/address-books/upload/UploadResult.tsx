@@ -40,11 +40,11 @@ function UploadResult(props: any) {
     const apiContacts =
       Utils.decodeBase64(state.addressBook.ContactsData).contacts ?? [];
 
-    console.log({ contacts, variables });
     const ContactsData = {
       variables,
       contacts: [...apiContacts, ...dataToSend],
     };
+
     return await new MailService()
       .UpdateContactList({
         ...state.addressBook,
@@ -84,7 +84,6 @@ function UploadResult(props: any) {
         return elem.hasOwnProperty("Phone") || elem.hasOwnProperty("Email");
       });
     setContacts(data);
-    console.log(data);
     updateAddressBook(data);
   }, []);
   return (

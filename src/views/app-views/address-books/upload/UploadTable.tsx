@@ -116,7 +116,7 @@ function UploadTable() {
     });
     const data = {
       variables: [
-        ...state.headers[0],
+        ...Utils.decodeBase64(state.addressBook.ContactsData).variables,
         { value: headerId, title: varName, isDefault: false },
       ],
       contacts:
@@ -124,18 +124,21 @@ function UploadTable() {
     };
     console.log(data);
     // Update state.addressBook
-    dispatch({
-      type: "SET_ADDRESSBOOK",
-      payload: { ...state.addressBook, ContactsData: Utils.encodeBase64(data) },
-    });
     return new MailService()
       .UpdateContactList({
         ...state.addressBook,
         ContactsData: Utils.encodeBase64(data),
       })
-      .then((data) => {
-        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+      .then((res) => {
+        if (res && res.ErrorCode === EnErrorCode.NO_ERROR) {
           message.success("Variable successfully created!");
+          dispatch({
+            type: "SET_ADDRESSBOOK",
+            payload: {
+              ...state.addressBook,
+              ContactsData: Utils.encodeBase64(data),
+            },
+          });
         }
       });
   };

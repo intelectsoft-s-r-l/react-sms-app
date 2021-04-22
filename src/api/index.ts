@@ -59,7 +59,6 @@ class HttpService {
 
   private _initializeResponseInterceptor = () => {
     this.instance.interceptors.response.use(
-      // @ts-ignore
       this._handleResponse,
       this._handleError
     );
