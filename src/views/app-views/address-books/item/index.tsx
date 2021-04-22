@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Button, Card } from "antd";
+import { Button } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { PageHeader, Result } from "antd";
 import { RouteComponentProps } from "react-router";
 import { useQuery } from "utils/hooks/useQuery";
 import { Link } from "react-router-dom";
-import ContactList from "./ContactList";
+import ContactTable from "./ContactTable";
 import Loading from "components/shared-components/Loading";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
@@ -44,7 +44,7 @@ const BookItem = (props: RouteComponentProps) => {
       <PageHeader
         style={{ padding: 0 }}
         title={<h1>{book.Name}</h1>}
-        onBack={() => props.history.goBack()}
+        onBack={() => props.history.push(props.match.url)}
       />
       <div className="mb-4 mt-2">
         <Link to={`${props.match.url}/upload?id=${query.get("id")}`}>
@@ -53,7 +53,7 @@ const BookItem = (props: RouteComponentProps) => {
           </Button>
         </Link>
       </div>
-      <ContactList book={book} {...props} />
+      <ContactTable book={book} {...props} />
     </>
   );
 };

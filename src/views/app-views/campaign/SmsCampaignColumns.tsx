@@ -25,7 +25,7 @@ export enum EnCampaignStatus {
   ACTIVE = 1,
   DELETED = 2,
 }
-const SmsCampaignColumns = (
+const CampaignColumns = (
   match: any,
   deleteCampaign: (id: number) => void,
   cancelCampaign: (id: number) => void
@@ -57,12 +57,15 @@ const SmsCampaignColumns = (
       dataIndex: "Status",
       render: (Status: number) => (
         <div>
-          <Tag className="mr-0">
+          <Tag
+            className="mr-0"
+            color={Status === EnSmsType.Instant ? "green" : "orange"}
+          >
             {Status === EnSmsType.Draft
               ? "Draft"
               : Status === EnSmsType.Scheduled
               ? "Scheduled"
-              : "Executing"}
+              : "Executed"}
           </Tag>
         </div>
       ),
@@ -80,7 +83,7 @@ const SmsCampaignColumns = (
           <EllipsisDropdown
             menu={
               <Menu>
-                {elm.Status === EnSmsType.Scheduled ||
+                {/* {elm.Status === EnSmsType.Scheduled ||
                 elm.Status === EnSmsType.Instant ? (
                   <>
                     <Menu.Item key="1" onClick={() => cancelCampaign(elm.ID!)}>
@@ -101,7 +104,7 @@ const SmsCampaignColumns = (
                     </Menu.Item>
                     <Menu.Divider />
                   </>
-                )}
+                )} */}
                 <Menu.Item
                   key="3"
                   onClick={() => {
@@ -121,4 +124,4 @@ const SmsCampaignColumns = (
 
   return tableColumns;
 };
-export default SmsCampaignColumns;
+export default CampaignColumns;

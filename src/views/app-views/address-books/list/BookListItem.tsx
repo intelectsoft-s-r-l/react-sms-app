@@ -1,20 +1,35 @@
 import * as React from "react";
 import { Card, Menu } from "antd";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link } from "react-router-dom";
 import EllipsisDropdown from "components/shared-components/EllipsisDropdown";
+import { MailService } from "api/mail";
+import { EnErrorCode } from "api";
 
-interface AddressBooksItemProps {
+interface IBookListItem {
   Name: string;
   id: number;
   CreateDate: any;
   Contacts: any[];
 }
-const handleDropdown = (element: any) => (
+const handleDropdown = (element: any, getAddressBooks: () => void) => (
   <Menu>
-    <Menu.Item onClick={() => {}}>Delete</Menu.Item>
+    <Menu.Item
+      onClick={async () => {
+        return await new MailService()
+          .DeleteContactList(element.ID)
+          .then((data) => {
+            console.log(element.ID);
+            if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+              getAddressBooks();
+            }
+          });
+      }}
+    >
+      Delete
+    </Menu.Item>
   </Menu>
 );
-const AddressBooksItem = (props: any) => {
+function BookListItem(props: any) {
   const { Name, match, Phone, Email, ID } = props;
   return (
     <Card className="w-100">
@@ -37,7 +52,10 @@ const AddressBooksItem = (props: any) => {
         </div>
         <div>
           <div className="text-right">
-            <EllipsisDropdown menu={handleDropdown(props)} isHorizontal />
+            <EllipsisDropdown
+              menu={handleDropdown(props, props.getAddressBooks)}
+              isHorizontal
+            />
           </div>
           <div
             className="d-flex justify-content-between align-items-center text-center"
@@ -66,5 +84,5 @@ const AddressBooksItem = (props: any) => {
       </div>
     </Card>
   );
-};
-export default AddressBooksItem;
+}
+export default BookListItem;

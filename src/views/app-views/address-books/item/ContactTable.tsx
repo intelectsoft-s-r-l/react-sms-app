@@ -2,35 +2,24 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { Card, Table } from "antd";
 import Utils from "utils";
-import { EnSelect } from "../upload/ContactTable";
-import "./contact_list.scss";
-import { table } from "node:console";
+import { EnSelect } from "../upload/UploadTable";
+import "./contact_table.scss";
 import { RouteComponentProps } from "react-router";
 
-const ContactListStyle = {
-  table: {
-    borderCollapse: "separate",
-    display: "inline-block",
-  },
-  thead: {
-    display: "inline-block",
-  },
-  tbody: {
-    display: "inline-block",
-  },
-} as const;
-type ContactListType = RouteComponentProps & {
+type ContactTableProps = RouteComponentProps & {
   book: any;
 };
-const ContactList = (props: ContactListType) => {
+const ContactTable = (props: ContactTableProps) => {
   const { book } = props;
   const contacts = Utils.decodeBase64(book.ContactsData).contacts ?? [];
   const variables =
-    Utils.decodeBase64(book.ContactsData).variables.filter(
-      (variable: any) =>
-        variable.value !== EnSelect.DISABLED &&
-        variable.value !== EnSelect.CREATE
-    ) ?? [];
+    (Utils.decodeBase64(book.ContactsData).variables &&
+      Utils.decodeBase64(book.ContactsData).variables.filter(
+        (variable: any) =>
+          variable.value !== EnSelect.DISABLED &&
+          variable.value !== EnSelect.CREATE
+      )) ??
+    [];
   const [contactsData, setContactsData] = useState<any>({
     contacts: [],
     variables: [],
@@ -68,7 +57,7 @@ const ContactList = (props: ContactListType) => {
           return [...acc, { title, dataIndex: title }];
         }, [])
       );
-    } else if (props.location.pathname.includes("phones")) {
+    } else {
       let phoneContacts = contacts
         .map((elem: any) => {
           return Object.keys(elem)
@@ -85,6 +74,7 @@ const ContactList = (props: ContactListType) => {
         contacts: phoneContacts,
         variables,
       });
+      console.log(phoneContacts);
       setColumns(
         variables.reduce((acc: any, variable: any) => {
           const { title } = variable;
@@ -104,4 +94,4 @@ const ContactList = (props: ContactListType) => {
     </Card>
   );
 };
-export default ContactList;
+export default ContactTable;

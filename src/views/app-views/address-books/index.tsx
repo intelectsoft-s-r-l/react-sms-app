@@ -1,67 +1,22 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { BookOutlined } from "@ant-design/icons";
-import AddressBooksItem from "./AddressBooksItem";
-import { Route, RouteComponentProps, Switch } from "react-router";
-import { Button, Empty } from "antd";
-import AddressBookModal from "./AddressBookModal";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router";
 import Upload from "./upload";
 import BookItem from "./item";
-import { ContactList } from "api/mail/types";
-import { MailService } from "api/mail";
-import { EnErrorCode } from "api";
+import BookList from "./list";
 
 const AddressBooks = (props: RouteComponentProps) => {
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [addressBooks, setAddressBooks] = useState<ContactList[]>([]);
-
-  const getAddressBooks = async () => {
-    return await new MailService().GetContactLists().then((data) => {
-      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-        setAddressBooks(data.ContactsLists);
-      }
-    });
-  };
-
-  const updateAddressBooks = async (data: ContactList) => {
-    return await new MailService().UpdateContactList(data).then((data) => {
-      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-        getAddressBooks();
-      }
-    });
-  };
-  useEffect(() => {
-    (async function dummyFunction() {
-      await getAddressBooks();
-    })();
-  }, []);
   return (
     <Switch>
-      <Route exact path={props.match.url}>
-        <AddressBookModal
-          visible={modalVisible}
-          close={() => setModalVisible(false)}
-          updateAddressBooks={updateAddressBooks}
-        />
-        <Button
-          type="primary"
-          onClick={() => setModalVisible(true)}
-          className="mb-4"
-        >
-          <BookOutlined />
-          New address book
-        </Button>
-        {addressBooks.map((book, idx: number) => (
-          <AddressBooksItem {...book} {...props} key={idx + 1} />
-        ))}
+      <Route exact path={`${props.match.url}`}>
+        <BookList {...props} />
       </Route>
-      <Route path={props.match.url + "/upload"}>
+      <Route path={`${props.match.url}/upload`} exact>
         <Upload {...props} />
       </Route>
-      <Route path={props.match.url + "/phones"}>
+      <Route path={`${props.match.url}/phones`} exact>
         <BookItem {...props} />
       </Route>
-      <Route path={props.match.url + "/emails"}>
+      <Route path={`${props.match.url}/emails`} exact>
         <BookItem {...props} />
       </Route>
     </Switch>

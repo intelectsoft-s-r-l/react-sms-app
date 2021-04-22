@@ -8,8 +8,8 @@ import { getProfileInfo } from "redux/actions/Account";
 
 export const AppViews = ({ getProfileInfo }: any) => {
   useEffect(() => {
-    (async function dumb() {
-      await getProfileInfo();
+    (async function IIFE() {
+      return await getProfileInfo();
     })();
   }, []);
   return (

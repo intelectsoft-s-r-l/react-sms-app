@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import {
   Form,
   Button,

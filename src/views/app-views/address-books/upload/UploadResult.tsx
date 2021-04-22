@@ -2,8 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Alert, Button, message } from "antd";
-import ContactTable, { ContactsToSubmit } from "./ContactTable";
-import Loading from "components/shared-components/Loading";
+import { ContactsToSubmit } from "./UploadTable";
 import { MailService } from "api/mail";
 import { UploadContext } from "./uploadContext";
 import { EnErrorCode } from "api";
@@ -31,10 +30,35 @@ function getAmount(array: ContactsToSubmit[], occurence: "Phone" | "Email") {
     .filter((elm) => elm.length).length;
   return count;
 }
-function ContactResult(props: any) {
+function UploadResult(props: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const { state, dispatch } = React.useContext(UploadContext);
   const [contacts, setContacts] = useState<any>([]);
+  const updateAddressBook = async (dataToSend: any) => {
+    const variables =
+      Utils.decodeBase64(state.addressBook.ContactsData).variables ?? [];
+    const apiContacts =
+      Utils.decodeBase64(state.addressBook.ContactsData).contacts ?? [];
+
+    console.log({ contacts, variables });
+    const ContactsData = {
+      variables,
+      contacts: [...apiContacts, ...dataToSend],
+    };
+    return await new MailService()
+      .UpdateContactList({
+        ...state.addressBook,
+        ContactsData: Utils.encodeBase64(ContactsData),
+        Phone: state.addressBook.Phone + getAmount(dataToSend, "Phone"),
+        Email: state.addressBook.Email + getAmount(dataToSend, "Email"),
+      })
+      .then((data) => {
+        setLoading(false);
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          message.success("Address book successfully updated!");
+        }
+      });
+  };
   useEffect(() => {
     // TODO: Verify contacts for duplicates
 
@@ -60,33 +84,8 @@ function ContactResult(props: any) {
       });
     setContacts(data);
     console.log(data);
-    //updateAddressBook(data);
+    updateAddressBook(data);
   }, []);
-  const updateAddressBook = async (dataToSend: any) => {
-    const variables =
-      Utils.decodeBase64(state.addressBook.ContactsData).variables ?? [];
-    const apiContacts =
-      Utils.decodeBase64(state.addressBook.ContactsData).contacts ?? [];
-
-    const ContactsData = {
-      variables,
-      contacts: [...apiContacts, ...dataToSend],
-    };
-    console.log({ ContactsData });
-    return await new MailService()
-      .UpdateContactList({
-        ...state.addressBook,
-        ContactsData: Utils.encodeBase64(ContactsData),
-        Phone: state.addressBook.Phone + getAmount(dataToSend, "Phone"),
-        Email: state.addressBook.Email + getAmount(dataToSend, "Email"),
-      })
-      .then((data) => {
-        setLoading(false);
-        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-          message.success("Address book successfully updated!");
-        }
-      });
-  };
   return (
     <>
       <Alert
@@ -131,11 +130,17 @@ function ContactResult(props: any) {
           </tbody>
         </table>
       </div>
-      <Link to={`${props.match.url}/item?id=${state.addressBook.ID}`}>
+      <Link
+        to={`${props.match.url}/${
+          getAmount(contacts, "Phone") > getAmount(contacts, "Email")
+            ? "phones"
+            : "emails"
+        }?id=${state.addressBook.ID}`}
+      >
         <Button type="primary">View contacts</Button>
       </Link>
     </>
   );
 }
 
-export default ContactResult;
+export default UploadResult;

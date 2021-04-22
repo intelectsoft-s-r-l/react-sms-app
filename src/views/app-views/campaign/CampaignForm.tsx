@@ -1,10 +1,21 @@
-import { Button, Card, Col, DatePicker, Form, Input, Radio, Row } from "antd";
-import { ROW_GUTTER } from "constants/ThemeConstant";
 import * as React from "react";
+import {
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Select,
+  Form,
+  Input,
+  Radio,
+  Row,
+} from "antd";
+import { ROW_GUTTER } from "constants/ThemeConstant";
 import TranslateText from "utils/translate";
 import { send } from ".";
 import moment from "moment";
 import Utils from "utils";
+import SelectReceivers from "./SelectReceivers";
 export const rules = {
   Name: [
     {
@@ -14,7 +25,7 @@ export const rules = {
   ],
   Description: [
     {
-      required: true,
+      required: false,
       message: "Please input a short description!",
     },
   ],
@@ -26,7 +37,7 @@ export const rules = {
   ],
   PhoneList: [
     {
-      required: true,
+      required: false,
       message: "Please input a phone list!",
     },
     {
@@ -55,6 +66,8 @@ function CampaignForm({
   maxPhoneLength,
   radioVal,
   setRadioVal,
+  phones,
+  setPhones,
 }: any) {
   return (
     <Card>
@@ -103,8 +116,10 @@ function CampaignForm({
               name="PhoneList"
               rules={rules.PhoneList}
             >
-              <Input.TextArea
-                placeholder={TranslateText("receivers.validate")}
+              <SelectReceivers
+                form={form}
+                phones={phones}
+                setPhones={setPhones}
               />
             </Form.Item>
           </Col>
@@ -119,9 +134,6 @@ function CampaignForm({
                 </Radio>
                 <Radio style={radioStyle} value={send.DELAY}>
                   {TranslateText("delay.sms.send")}
-                </Radio>
-                <Radio style={radioStyle} value={send.DRAFT}>
-                  {TranslateText("draft")}
                 </Radio>
               </Radio.Group>
             </div>
@@ -140,9 +152,7 @@ function CampaignForm({
             <Form.Item>
               <div>
                 <Button type="primary" htmlType="submit" className="mr-3">
-                  {radioVal === send.DRAFT
-                    ? TranslateText("draft")
-                    : TranslateText("save")}
+                  {TranslateText("save")}
                 </Button>
               </div>
             </Form.Item>

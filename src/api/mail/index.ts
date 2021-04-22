@@ -27,4 +27,7 @@ export class MailService extends HttpService {
 
   public UpdateContactList = async (data: ContactList) =>
     this.instance.post<ApiResponse>(`/UpdateContactList`, data);
+
+  public DeleteContactList = async (ID: number) =>
+    this.instance.get<ApiResponse>(`/DeleteContactList`, { params: { ID } });
 }

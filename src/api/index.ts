@@ -95,6 +95,11 @@ class HttpService {
       response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN
     ) {
       return this._handleExpireToken(response);
+    } else if (
+      response.data &&
+      response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR
+    ) {
+      message.error(`Error: ${response.data.ErrorMessage}`);
     }
 
     return response.data;

@@ -4,25 +4,32 @@ import { Form, Input, Modal } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { ContactList } from "api/mail/types";
+import { predefinedHeaders } from "views/app-views/address-books/upload/UploadTable";
+import Utils from "utils";
 
-interface IAddressBookModal {
+interface IBookModal {
   visible: boolean;
   close: () => void;
   updateAddressBooks: (data: ContactList) => void;
 }
-const AddressBookModal = ({
-  visible,
-  close,
-  updateAddressBooks,
-}: IAddressBookModal) => {
+function BookModal({ visible, close, updateAddressBooks }: IBookModal) {
   const [form] = useForm();
 
   useEffect(() => {
     if (!visible) return;
     form.resetFields();
   }, [visible]);
+
   const onFinish = async ({ Name }: any) => {
-    updateAddressBooks({ Name });
+    // Set predefined headers by default
+    const data = {
+      variables: predefinedHeaders,
+      contacts: [],
+    };
+    updateAddressBooks({
+      Name,
+      ContactsData: Utils.encodeBase64(data),
+    });
   };
   return (
     <Modal
@@ -41,7 +48,7 @@ const AddressBookModal = ({
         name="AddressBookAdd"
         form={form}
         initialValues={{
-          Name: `My list ${moment().format("LTS")}`,
+          Name: `My list - ${moment().format("LLL")}`,
         }}
       >
         <Form.Item name="Name">
@@ -50,5 +57,5 @@ const AddressBookModal = ({
       </Form>
     </Modal>
   );
-};
-export default AddressBookModal;
+}
+export default BookModal;

@@ -1,5 +1,5 @@
 import Utils from "utils";
-import { EnSelect } from "./ContactTable";
+import { EnSelect } from "./UploadTable";
 // @ts-ignore
 import shortid from "shortid";
 
@@ -59,6 +59,7 @@ export const uploadReducer = (state = uploadState, action: any) => {
         ...state,
         uploadedContacts: data,
         hasVariables: false,
+        headers: action.headers,
       };
     case "UPLOAD_CONTACTS_WITH_VAR":
       const contacts = action.payload

@@ -9,7 +9,7 @@ import TranslateText from "utils/translate";
 import { SmsService } from "api/sms";
 import { EnErrorCode } from "api";
 import { useQuery } from "utils/hooks/useQuery";
-import { Col, notification, PageHeader, Result, Row } from "antd";
+import { Col, notification, PageHeader, Result, Row, message } from "antd";
 import { ICampaignList } from "api/sms/types";
 import Button from "antd/es/button";
 import { Link } from "react-router-dom";
@@ -31,9 +31,10 @@ function CampaignPage(props: RouteComponentProps) {
   const [count, setCount] = useState<number>(1); // SMS count
   const [form] = useForm();
   const [date, setDate] = useState<Moment | string>(moment()); // Current date by default
-  const [message, setMessage] = useState<any>(TranslateText("sms.example"));
+  const [textMessage, setMessage] = useState<any>(TranslateText("sms.example"));
   const [loading, setLoading] = useState<boolean>(false);
   const [radioVal, setRadioVal] = useState<number | undefined>(send.NOW);
+  const [phones, setPhones] = useState<string | number>("");
 
   const handleTextCalculation = (text: any) => {
     setMessage(text);
@@ -50,25 +51,30 @@ function CampaignPage(props: RouteComponentProps) {
     }
   };
   const updateCampaign = async (values: any) => {
-    setLoading(true);
-    return await new SmsService()
-      .SMS_UpdateCampaign({
-        ...values,
-        ID: query.get("id") ?? values.ID,
-        ScheduledDate: Utils.handleDotNetDate(values.ScheduledDate),
-        Status: radioVal,
-      })
-      .then((data) => {
-        setLoading(false);
-        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-          props.history.push(props.match.url);
-          notification.success({
-            message: `Campaign was successfully ${
-              query.get("id") ? "edited" : "added"
-            }!`,
-          });
-        }
-      });
+    console.log(phones);
+    if (!phones) message.error("No recipients!");
+    else {
+      setLoading(true);
+      return await new SmsService()
+        .SMS_UpdateCampaign({
+          ...values,
+          PhoneList: phones,
+          ID: query.get("id") ?? values.ID,
+          ScheduledDate: Utils.handleDotNetDate(values.ScheduledDate),
+          Status: radioVal,
+        })
+        .then((data) => {
+          setLoading(false);
+          if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+            props.history.push(props.match.url);
+            notification.success({
+              message: `Campaign was successfully ${
+                query.get("id") ? "edited" : "added"
+              }!`,
+            });
+          }
+        });
+    }
   };
 
   const getCampaignInfo = async () => {
@@ -145,12 +151,14 @@ function CampaignPage(props: RouteComponentProps) {
             maxPhoneLength={maxTextLength}
             setRadioVal={setRadioVal}
             radioVal={radioVal}
+            phones={phones}
+            setPhones={setPhones}
           />
         </Col>
         <Col xxl={8} xl={24} lg={24} md={24}>
           <Phone
             currentSms={count}
-            message={message}
+            message={textMessage}
             MAX_SMS={maxAsciiLength}
           />
         </Col>

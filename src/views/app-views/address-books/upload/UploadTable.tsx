@@ -47,7 +47,7 @@ export const predefinedHeaders = [
     isDefault: true,
   },
 ];
-function ContactTable() {
+function UploadTable() {
   const { state, dispatch } = React.useContext(UploadContext);
   const selectRefs = React.useRef<any[]>([]);
   const uploadedContacts = state.uploadedContacts.filter(
@@ -119,8 +119,15 @@ function ContactTable() {
         ...state.headers[0],
         { value: headerId, title: varName, isDefault: false },
       ],
-      contacts: Utils.decodeBase64(state.addressBook.ContactsData).contacts,
+      contacts:
+        Utils.decodeBase64(state.addressBook.ContactsData).contacts ?? [],
     };
+    console.log(data);
+    // Update state.addressBook
+    dispatch({
+      type: "SET_ADDRESSBOOK",
+      payload: { ...state.addressBook, ContactsData: Utils.encodeBase64(data) },
+    });
     return new MailService()
       .UpdateContactList({
         ...state.addressBook,
@@ -191,4 +198,4 @@ function ContactTable() {
     </div>
   );
 }
-export default ContactTable;
+export default UploadTable;

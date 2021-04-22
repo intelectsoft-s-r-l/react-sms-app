@@ -1,30 +1,18 @@
 import * as React from "react";
-// @ts-ignore
-import shortid from "shortid";
 import { useState, useEffect } from "react";
 import { useQuery } from "utils/hooks/useQuery";
-import { Result, PageHeader, Tabs, Card } from "antd";
-import { Link, Route, RouteComponentProps } from "react-router-dom";
+import { Result, PageHeader, Tabs } from "antd";
+import { Link, RouteComponentProps } from "react-router-dom";
 import InsertManually from "./manual";
 import UploadFile from "./file";
-import { ContactList, ContactListResponse } from "api/mail/types";
 import Loading from "components/shared-components/Loading";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
 import { UploadContext } from "./uploadContext";
 import { uploadReducer, uploadState } from "./uploadReducer";
-import ContactResult from "./ContactResult";
-import ContactTable, { predefinedHeaders } from "./ContactTable";
+import UploadResult from "./UploadResult";
+import UploadTable, { predefinedHeaders } from "./UploadTable";
 import Utils from "utils";
-
-/*
- * This component will need 3 separate tabs
- * 1. Upload file
- * 2. Copy & Paste
- * 3. Import from service
- */
-
-// Upload contacts component
 
 export interface IUploadProps extends RouteComponentProps {
   uploadContacts: (data: any[]) => void;
@@ -104,7 +92,7 @@ const Upload = (props: RouteComponentProps) => {
           <div style={{ fontWeight: 400 }}>
             <span style={{ fontSize: 30 }}>Add contacts:</span>{" "}
             <Link
-              to={props.match.url + `/item?id=${addressBook.ID}`}
+              to={props.match.url + `/emails?id=${addressBook.ID}`}
               style={{ fontSize: 30 }}
             >
               {addressBook.Name}
@@ -115,9 +103,9 @@ const Upload = (props: RouteComponentProps) => {
         onBack={() => props.history.goBack()}
       >
         {state.hasUploaded && !state.hasVariables ? (
-          <ContactResult {...props} />
+          <UploadResult {...props} />
         ) : state.hasUploaded && state.hasVariables ? (
-          <ContactTable />
+          <UploadTable />
         ) : (
           <Tabs defaultActiveKey="2" type="line">
             {uploadTabs({ ...props, uploadContacts }).map(

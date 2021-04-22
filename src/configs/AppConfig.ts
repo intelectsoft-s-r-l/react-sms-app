@@ -1,7 +1,7 @@
 import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from "constants/ThemeConstant";
 import { env } from "./EnvironmentConfig";
 
-export const APP_NAME = "My SMS App";
+export const APP_NAME = "IS Sender";
 export const PORTAL_URL = env!.PORTAL_URL;
 export const DOMAIN = env!.DOMAIN;
 export const APP_ENV = env!.APP_ENV;
