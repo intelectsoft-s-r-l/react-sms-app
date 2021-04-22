@@ -5,8 +5,9 @@ export type ContactList = {
   Email?: boolean;
   ID?: number;
   Name: string;
-  Phone?: boolean;
+  Phone?: number;
   ContactsData?: string;
+  CreateDate?: any;
 };
 
 export type ContactListsResponse = ApiDecorator<
