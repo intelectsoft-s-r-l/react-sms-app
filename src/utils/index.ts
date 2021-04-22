@@ -204,9 +204,9 @@ class Utils {
     return moment(date).format("[/Date(]xZZ[)/]");
   }
 
-  static fromDotNetDate(date: any) {
+  static fromDotNetDate(date: any, dateFormat = "DD-MM-YYYY") {
     try {
-      return moment(new Date(parseInt(date.substr(6)))).format("DD-MM-YYYY");
+      return moment(new Date(parseInt(date.substr(6)))).format(dateFormat);
     } catch {
       return "Unknown date";
     }
