@@ -67,12 +67,12 @@ function UploadResult(props: any) {
         return Object.keys(elem)
           .filter((key) => {
             if (key === "Email") {
-              return Utils.isEmail(elem[key]);
+              return Utils.isEmail(elem[key].trim());
             }
             if (key === "Phone") {
-              return Utils.isNumeric(elem[key]);
+              return Utils.isNumeric(elem[key].trim());
             }
-            return elem[key];
+            return elem[key].trim();
           })
           .reduce((acc: any, key: any) => {
             acc[key] = elem[key];
@@ -80,6 +80,7 @@ function UploadResult(props: any) {
           }, {});
       })
       .filter((elem: any) => {
+        // Get rid of objects that don't have at least one Phone or Email
         return elem.hasOwnProperty("Phone") || elem.hasOwnProperty("Email");
       });
     setContacts(data);
