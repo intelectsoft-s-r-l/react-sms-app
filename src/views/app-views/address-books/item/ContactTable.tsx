@@ -1,13 +1,17 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Card, Table } from "antd";
+import { Card, message, Table } from "antd";
 import Utils from "utils";
 import { EnSelect } from "../upload/UploadTable";
 import "./contact_table.scss";
 import { RouteComponentProps } from "react-router";
+import ContactActions from "./ContactActions";
+import { MailService } from "api/mail";
+import { EnErrorCode } from "api";
+import { ContactList } from "api/mail/types";
 
 type ContactTableProps = RouteComponentProps & {
-  book: any;
+  book: ContactList;
 };
 const ContactTable = (props: ContactTableProps) => {
   const { book } = props;
@@ -84,11 +88,42 @@ const ContactTable = (props: ContactTableProps) => {
     }
   }, [props.location.pathname]);
 
+  const deleteRowItem = async (id: string) => {
+    const contactsData = {
+      contacts: Utils.decodeBase64(book.ContactsData).contacts.filter(
+        (elem: any) => elem.id !== id
+      ),
+      variables: Utils.decodeBase64(book.ContactsData).variables,
+    };
+    return await new MailService()
+      .UpdateContactList({
+        ...book,
+        ContactsData: Utils.encodeBase64(contactsData),
+        Phone: book.Phone! - 1,
+      })
+      .then((data) => {
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          message.success("Contact deleted!");
+          setContactsData({
+            contacts: contactsData.contacts,
+          });
+        }
+      });
+  };
+
   return (
     <Card>
       <Table
         dataSource={contactsData.contacts}
-        columns={columns}
+        columns={[
+          ...columns,
+          {
+            dataIndex: "actions",
+            render: (_: any, elem: any) => (
+              <ContactActions {...elem} deleteRowItem={deleteRowItem} />
+            ),
+          },
+        ]}
         rowKey={"id"}
       />
     </Card>
