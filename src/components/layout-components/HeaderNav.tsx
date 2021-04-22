@@ -88,19 +88,17 @@ const HeaderNav = (props: any) => {
               )}
             </Menu>
           </div>
-          {!isNavTop &&
-            Cookies.get(`ManageToken_${sessionStorage.getItem("c_id")}`) && (
-              <div className="nav-left">
-                <div
-                  className={`text-${
-                    headerNavColor === "#ffffff" ? "dark" : "white"
-                  }`}
-                  style={{ fontSize: "20px" }}
-                >
-                  {Company}
-                </div>
-              </div>
-            )}
+          <div className="nav-left">
+            {/* Show by default the name of the company */}
+            <div
+              className={`text-${
+                headerNavColor === "#ffffff" ? "dark" : "white"
+              }`}
+              style={{ fontSize: "20px" }}
+            >
+              {Company}
+            </div>
+          </div>
           <div className="nav-right">
             <NavPanel />
             <NavProfile />
