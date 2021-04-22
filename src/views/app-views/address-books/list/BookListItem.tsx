@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import EllipsisDropdown from "components/shared-components/EllipsisDropdown";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";
+import Utils from "utils";
 
 interface IBookListItem {
   Name: string;
@@ -30,12 +31,12 @@ const handleDropdown = (element: any, getAddressBooks: () => void) => (
   </Menu>
 );
 function BookListItem(props: any) {
-  const { Name, match, Phone, Email, ID } = props;
+  const { Name, match, Phone, Email, ID, CreateDate } = props;
   return (
     <Card className="w-100">
       <div className="d-flex justify-content-between w-100">
         <div>
-          <p>12/12/2020 16:40</p>
+          <p>{Utils.fromDotNetDate(CreateDate, "LLL")}</p>
           <h3>
             <Link to={match.url + `/emails?id=${ID}`}>{Name}</Link>
           </h3>

@@ -17,13 +17,18 @@ const BookItem = (props: RouteComponentProps) => {
   const [variables, setVariables] = useState<any>([]);
   const [contacts, setContacts] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const getContactList = async () => {
+    return await new MailService()
+      .GetContactList(+query.get("id")!)
+      .then((data) => {
+        setLoading(false);
+        if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+          setBook(data.ContactsList);
+        }
+      });
+  };
   useEffect(() => {
-    new MailService().GetContactList(+query.get("id")!).then((data) => {
-      setLoading(false);
-      if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
-        setBook(data.ContactsList);
-      }
-    });
+    getContactList();
   }, [query.get("id")]);
 
   if (loading) {
