@@ -61,7 +61,6 @@ function UploadResult(props: any) {
   };
   useEffect(() => {
     // TODO: Verify contacts for duplicates
-
     const data = state.uploadedContacts
       .map((elem: any) => {
         return Object.keys(elem)
@@ -85,6 +84,9 @@ function UploadResult(props: any) {
       });
     setContacts(data);
     updateAddressBook(data);
+    return () => {
+      setContacts([]);
+    };
   }, []);
   return (
     <>

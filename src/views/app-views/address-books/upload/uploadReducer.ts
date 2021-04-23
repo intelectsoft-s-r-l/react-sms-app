@@ -59,7 +59,6 @@ export const uploadReducer = (state = uploadState, action: any) => {
         ...state,
         uploadedContacts: data,
         hasVariables: false,
-        headers: action.headers,
       };
     case "UPLOAD_CONTACTS_WITH_VAR":
       const contacts = action.payload

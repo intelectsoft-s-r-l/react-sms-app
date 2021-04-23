@@ -35,6 +35,7 @@ function BookList(props: RouteComponentProps) {
     (async function IIFE() {
       return await getAddressBooks();
     })();
+    return () => new MailService()._source.cancel();
   }, []);
   return (
     <>

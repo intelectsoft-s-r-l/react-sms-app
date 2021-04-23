@@ -55,10 +55,12 @@ function UploadTable() {
   );
   useEffect(() => {
     // Reference to the select boxes
-    // You can manipulate with them later on
     selectRefs.current = state.headers.map(
       (_: any, i: number) => selectRefs.current[i] ?? React.createRef()
     );
+    return () => {
+      selectRefs.current = [];
+    };
   }, []);
 
   const addContacts = async () => {

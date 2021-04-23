@@ -98,7 +98,7 @@ class HttpService {
       response.data &&
       response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR
     ) {
-      message.error(`Error: ${response.data.ErrorMessage}`);
+      message.error(`Internal Error: ${response.data.ErrorMessage}`);
     }
 
     return response.data;
