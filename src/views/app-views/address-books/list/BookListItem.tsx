@@ -19,7 +19,6 @@ const handleDropdown = (element: any, getAddressBooks: () => void) => (
         return await new MailService()
           .DeleteContactList(element.ID)
           .then((data) => {
-            console.log(element.ID);
             if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
               getAddressBooks();
             }

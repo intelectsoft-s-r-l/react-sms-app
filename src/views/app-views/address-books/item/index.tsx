@@ -6,7 +6,7 @@ import { PageHeader, Result } from "antd";
 import { RouteComponentProps } from "react-router";
 import { useQuery } from "utils/hooks/useQuery";
 import { Link } from "react-router-dom";
-import ContactTable from "./ContactTable";
+import ContactTable from "./contact-table";
 import Loading from "components/shared-components/Loading";
 import { MailService } from "api/mail";
 import { EnErrorCode } from "api";

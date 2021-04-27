@@ -2,7 +2,7 @@ import { ApiDecorator, ApiResponse } from "api/types";
 
 export type ContactList = {
   Description?: string;
-  Email?: boolean;
+  Email?: number;
   ID?: number;
   Name: string;
   Phone?: number;
