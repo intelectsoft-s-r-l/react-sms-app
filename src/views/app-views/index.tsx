@@ -5,12 +5,14 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import Loading from "components/shared-components/Loading";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
 import { getProfileInfo } from "redux/actions/Account";
+import { AuthService } from "api/auth";
 
 export const AppViews = ({ getProfileInfo }: any) => {
   useEffect(() => {
     (async function IIFE() {
       return await getProfileInfo();
     })();
+    return () => new AuthService()._source.cancel();
   }, []);
   return (
     <Suspense fallback={<Loading cover="content" />}>

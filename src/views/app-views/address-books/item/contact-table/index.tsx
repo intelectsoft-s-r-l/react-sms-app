@@ -217,17 +217,13 @@ const ContactTable = (props: ContactTableProps) => {
     };
   });
 
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
-  };
   return (
     <Card>
       <Table
         loading={loading}
-        components={components}
+        components={{
+          body: { row: EditableRow, cell: EditableCell },
+        }}
         rowClassName={() => "editable-row"}
         dataSource={contactsData.contacts}
         columns={[

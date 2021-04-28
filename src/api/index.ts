@@ -47,6 +47,7 @@ class HttpService {
   public constructor(baseURL = "") {
     this.instance = axios.create({
       baseURL,
+      headers: { Accept: "application/json" },
     });
     this._source = axios.CancelToken.source();
     this.company_id = sessionStorage.getItem("c_id");
@@ -78,13 +79,13 @@ class HttpService {
       : Utils.setToken(Token);
   };
   private _handleRequest = (config: AxiosRequestConfig) => {
-    console.log(config);
-    return {
+    const request = {
       ...config,
       data: { ...config.data, Token: this.token },
       params: { ...config.params, Token: this.token },
-      cancelToken: this._source.token,
     };
+    console.log(request);
+    return request;
   };
 
   private _handleResponse = async (response: AxiosResponse) => {
@@ -93,14 +94,14 @@ class HttpService {
       response.data &&
       response.data.ErrorCode === EnErrorCode.EXPIRED_TOKEN
     ) {
-      return this._handleExpireToken(response);
+      const res = await this._handleExpireToken(response);
+      return await res;
     } else if (
       response.data &&
       response.data.ErrorCode === EnErrorCode.INTERNAL_ERROR
     ) {
       message.error(`Internal Error: ${response.data.ErrorMessage}`);
     }
-
     return response.data;
   };
 
@@ -122,16 +123,19 @@ class HttpService {
     if (!store.getState().auth.isRefreshing) {
       return new Promise((resolve, reject) => {
         store.dispatch({ type: SET_IS_REFRESHING, payload: true });
-        console.log(store.getState().auth.isRefreshing);
         axios
           .get(`${API_AUTH_URL}/RefreshToken`, {
             params: { Token: this.token },
           })
           .then(({ data }) => {
             console.log(`Refresh token was called`, data);
-            if (data && data.ErrorCode === EnErrorCode.NO_ERROR) {
+            if (data?.ErrorCode === EnErrorCode.NO_ERROR) {
               this.setToken(data.Token);
-              resolve(this.instance(config));
+              resolve(
+                // Response config data is a string
+                // Have to parse it back to object in order to change the request config
+                this.instance({ ...config, data: JSON.parse(config.data) })
+              );
             } else {
               redirectToLogin();
             }
@@ -148,7 +152,13 @@ class HttpService {
         const intervalId = setInterval(() => {
           if (!store.getState().auth.isRefreshing) {
             clearInterval(intervalId);
-            resolve(this.instance(config));
+            resolve(
+              this.instance({
+                ...config,
+                data: { ...JSON.parse(config.data), Token: this.token },
+                params: { ...config.params, Token: this.token },
+              })
+            );
           }
         }, 100);
       });

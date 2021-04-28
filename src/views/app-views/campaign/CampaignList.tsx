@@ -27,7 +27,6 @@ const CampaignList = ({ match }: RouteComponentProps) => {
       if (data && data.ErrorCode === 0) {
         setCampaignListToSearch(data.CampaignList);
         setCampaignInfo(data.CampaignList);
-        return Promise;
       }
     });
   };
@@ -61,7 +60,9 @@ const CampaignList = ({ match }: RouteComponentProps) => {
   };
 
   useEffect(() => {
-    getCampaignList();
+    (async function IIFE() {
+      await getCampaignList();
+    })();
     return () => instance._source.cancel();
   }, []);
   return (

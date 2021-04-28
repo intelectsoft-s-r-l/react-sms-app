@@ -127,7 +127,7 @@ const SmsDashboard = () => {
       .Info_GetDetailByPeriod(firstDate, secondDate)
       .then((data) => {
         setLoading(false);
-        if (data && data.ErrorCode === 0) {
+        if (data?.ErrorCode === EnErrorCode.NO_ERROR) {
           setSmsList(data.SMSList);
           setCsvData(
             data.SMSList.map((elem) => {
@@ -152,8 +152,7 @@ const SmsDashboard = () => {
   };
   const getSmsInfo = async () => {
     return instance.Info_GetTotal().then(async (data) => {
-      if (data && data.ErrorCode === 0) {
-        await getSmsList();
+      if (data?.ErrorCode === EnErrorCode.NO_ERROR) {
         setStatusData([
           data.SentThisMonth,
           data.FailedDelivery,
@@ -169,7 +168,7 @@ const SmsDashboard = () => {
     });
   };
   useEffect(() => {
-    getSmsInfo();
+    Promise.all([getSmsInfo(), getSmsList()]);
     return () => instance._source.cancel();
   }, []);
 
